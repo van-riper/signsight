@@ -1,0 +1,25 @@
+# virtualenv
+.venv/
+
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# model weights
+models/*
+!models/.gitkeep
+
+# dataset
+data/*
+!data/.gitkeep
+
+# editor
+.vscode/
+.idea/
+
+# os
+.DS_Store
+Thumbs.db
