@@ -5,16 +5,23 @@ and deep learning with PyTorch.
 
 ## Installation
 
-Requires Python version 3.12 exactly.
+First, ensure that Python 3.12 is installed.
 
 ```bash
-$ python --version
+# On Mac/Linux:
+$ command -v python3.12
+/usr/bin/python3.12
+
+# On Windows:
+$ py -3.12 --version
 Python 3.12.13
 ```
 
+Follow these steps in order by running the provided commands in your terminal.
+
 ### Setup
 
-Download a clone of the repo on your machine and make it the working directory.
+Download a clone of this repo on your machine and make it the working directory.
 
 ```bash
 git clone https://github.com/van-riper/signsight.git
@@ -38,8 +45,10 @@ environment is activated before proceeding.
 
 ### Install Requirements
 
-First, install PyTorch and TorchVision. **Please make sure** to specify the CPU
-package index if your machine does not have a GPU that is compatible with CUDA.
+First, install PyTorch and TorchVision.
+
+> **Please make sure** to specify the CPU package index if your machine does not
+> have a GPU that is compatible with CUDA.
 
 ```bash
 # If your machine has a CUDA-capable GPU:
@@ -49,7 +58,7 @@ pip install torch torchvision
 pip install --index-url=https://download.pytorch.org/whl/cpu torch torchvision
 ```
 
-Then, install the rest of the required packages:
+Then, install the remaining required packages.
 
 ```bash
 pip install -r requirements.txt
@@ -60,13 +69,12 @@ pip install -r requirements.txt
 Sometimes, `pip` will install packages from its cache if the packages have
 previously been downloaded to your machine before. This can create problems if
 the cache contains versions of packages that are not compatible with this
-program.
+program. However, this can be avoided by forcing pip to download installed
+packages instead of taking them out of the package cache on your machine.
 
 If pip is not properly installing the required packages or the program won't
-start, try deleting the repo and redoing the installation process from the
-beginning, except add the `--no-cache-dir` flag when running `pip install`.
-This forces pip to download installed packages instead of taking them out of
-its cache on your machine:
+start, try by deleting this repo clone and redoing the installation process
+from the beginning, except pass `--no-cache-dir` when running `pip install`.
 
 ```bash
 # Example:
