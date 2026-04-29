@@ -12,22 +12,32 @@ $ python --version
 Python 3.12.13
 ```
 
-### Mac/Linux
+### Clone Repo
 
 ```bash
 git clone https://github.com/van-riper/signsight.git
 cd signsight
-python3.12 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
 ```
 
-### Windows
+### Create and Activate Virtual Environment
+
+On Mac/Linux:
+
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate
+```
+
+On Windows:
 
 ```powershell
-git clone https://github.com/van-riper/signsight.git
-cd signsight
 py -3.12 -m venv .venv
 .venv\Scripts\activate
-pip install -r requirements.txt
+```
+
+### Install Requirements
+
+```bash
+pip install --no-cache-dir -r requirements.txt
+pip install --index-url=https://download.pytorch.org/whl/cpu torch torchvision
 ```
