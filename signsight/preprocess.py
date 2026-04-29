@@ -4,7 +4,7 @@ Transforms pipeline for preprocessing input images before model inference.
 
 from torchvision import transforms
 
-IMAGE_SIZE: int = 64
+from signsight.const import IMAGE_SIZE
 
 
 def get_transform() -> transforms.Compose:
