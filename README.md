@@ -54,3 +54,21 @@ Then, install the rest of the required packages:
 ```bash
 pip install -r requirements.txt
 ```
+
+#### Troubleshooting Cached Packages
+
+Sometimes, `pip` will install packages from its cache if the packages have
+previously been downloaded to your machine before. This can create problems if
+the cache contains versions of packages that are not compatible with this
+program.
+
+If pip is not properly installing the required packages or the program won't
+start, try deleting the repo and redoing the installation process from the
+beginning, except add the `--no-cache-dir` flag when running `pip install`.
+This forces pip to download installed packages instead of taking them out of
+its cache on your machine:
+
+```bash
+# Example:
+pip install --no-cache-dir -r requirements.txt
+```
