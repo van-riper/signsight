@@ -3,6 +3,19 @@
 SignSight is a real-time webcam ASL alphabet recognizer using computer vision
 and deep learning with PyTorch.
 
+Python 3.12 is required to run this program, so make sure it is installed and
+available on your system.
+
+This program uses the following packages:
+
+- [PyTorch](https://pypi.org/project/torch/)
+- [TorchVision](https://pypi.org/project/torchvision/)
+- [OpenCV](https://pypi.org/project/opencv-python/)
+- [MediaPipe](https://pypi.org/project/mediapipe/)
+- [NumPy](https://pypi.org/project/numpy/)
+- [Matplotlib](https://pypi.org/project/matplotlib/)
+- [scikit-learn](https://pypi.org/project/scikit-learn/)
+
 ## Installation
 
 First, ensure that Python 3.12 is installed.
