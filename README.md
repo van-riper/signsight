@@ -72,3 +72,17 @@ its cache on your machine:
 # Example:
 pip install --no-cache-dir -r requirements.txt
 ```
+
+### Download the Dataset
+
+This program's deep learning model is configured for the ASL Alphabet dataset
+by Akash Nagaraj. To train the model on your machine, follow the steps below.
+
+1. Go to the
+   [ASL Alphabet](https://www.kaggle.com/datasets/grassknoted/asl-alphabet)
+   dataset on Kaggle.
+2. Click the "Download" button and click the "Download dataset as zip" option.
+3. Extract `archive.zip` in your downloads folder.
+4. Move the extracted folder `archive/` into the folder `data/` in this repo.
+
+> TODO: support kagglehub integration
