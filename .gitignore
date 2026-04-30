@@ -23,3 +23,6 @@ data/*
 # os
 .DS_Store
 Thumbs.db
+
+# confusion matrix image
+confusion_matrix.png
