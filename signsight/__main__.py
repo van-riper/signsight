@@ -14,6 +14,7 @@ from argparse import ArgumentParser
 from pathlib import Path
 
 from signsight.const import DATASET_PATH
+from signsight.evaluate import evaluate_model
 from signsight.train import train_model
 
 # Must be able to detect the dataset
@@ -32,12 +33,15 @@ def main() -> None:
     subparsers = parser.add_subparsers(dest="command")
 
     subparsers.add_parser("train", help="Train the model")
+    subparsers.add_parser("eval", help="Evaluate the model")
 
     args = parser.parse_args()
 
     match args.command:
         case "train":
             train_model()
+        case "eval":
+            evaluate_model()
         case _:
             parser.print_help()
 
