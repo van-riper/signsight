@@ -92,19 +92,29 @@ def _plot_confusion_matrix(
     # Convert tensors to numpy arrays for scikit-learn
     confusion_matrix = sklearn_cm(labels.numpy(), predictions.numpy())
 
+    _, axes = plt.subplots(figsize=(18, 16))
+
     # Create a visualization the confusion matrix
     confusion_matrix_display = ConfusionMatrixDisplay(
         confusion_matrix=confusion_matrix, display_labels=dataset_class_names
     )
 
-    # Rotate x-axis labels to prevent overlap across 29 classes
-    confusion_matrix_display.plot(xticks_rotation=45)
+    # Plot the display figure
+    confusion_matrix_display.plot(
+        ax=axes,
+        xticks_rotation=45,  # Rotate x-axis labels to prevent overlap
+        colorbar=True,
+        values_format="",  # Hides cell numbers
+    )
 
-    plt.title("SignSight Deep Learning Model Confusion Matrix")
+    axes.set_title("SignSight Confusion Matrix", fontsize=18, pad=20)
+    axes.tick_params(axis="both", labelsize=11)
+    axes.set_xlabel("Predicted label", fontsize=13)
+    axes.set_ylabel("True label", fontsize=13)
     plt.tight_layout()
 
     # Save the confusion matrix to disk
-    plt.savefig(FIGURE_PATH, dpi=150)
+    plt.savefig(FIGURE_PATH, dpi=150, bbox_inches="tight")
     print("Confusion matrix figure saved to: confusion_matrix.png")
 
     # Attempt to show interactively if a display is available
