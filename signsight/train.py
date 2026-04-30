@@ -18,8 +18,8 @@ def train_model() -> None:
     # Split dataset into training (80%) and validation (20%) subsets
     train_set, val_set = split_dataset()
 
-    # Wraps data with proper batch size for training/validation and randomize
-    # image order when grouping batches
+    # Wraps data with proper batch size for training/validation
+    # and randomize image order when grouping batches
     train_loader = DataLoader(train_set, BATCH_SIZE, shuffle=True)
     val_loader = DataLoader(val_set, BATCH_SIZE)
 
@@ -32,8 +32,9 @@ def train_model() -> None:
     criterion = torch.nn.CrossEntropyLoss()
 
     # Optimizer which reduces losses by carefully adjusting weights
-    # NOTE: learning rate (lr) controls how large each adjustment is
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+
+    # NOTE: learning rate (lr) controls how large each adjustment is
 
     # Track the total amount of incorrect predictions across all epochs
     train_loss_total: float
@@ -64,8 +65,9 @@ def train_model() -> None:
             loss.backward()
 
             # Update the weights
-            # NOTE: this is where the weights in the .pth file come from
             optimizer.step()
+
+            # NOTE: this is where the weights in the .pth file come from
 
             # Accumulate total losses across all batches for display
             train_loss_total += loss.item()
@@ -104,8 +106,9 @@ def _validate(
     correct_predictions_count: int = 0
 
     # "Evaluation mode" disables dropout and freezes batch normalization
-    # NOTE: this saves memory and speeds up the training pipeline
     model.eval()
+
+    # NOTE: this saves memory and speeds up the training pipeline
 
     # Disable gradient tracking since weights are not being updated here
     with torch.no_grad():
