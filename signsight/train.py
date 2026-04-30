@@ -70,6 +70,8 @@ def train_model() -> None:
             # Accumulate total losses across all batches for display
             train_loss_total += loss.item()
 
+            _print_batch_progress(batch + 1, len(train_loader))
+
         # Run model on the validation subset without updating the weights
         val_loss_total, val_accuracy = _validate(
             model, val_loader, criterion, device, len(val_set)
@@ -130,3 +132,14 @@ def _validate(
     val_accuracy: float = correct_predictions_count / dataset_size
 
     return val_loss_average, val_accuracy
+
+
+def _print_batch_progress(batch_counter: int, batch_total: int) -> None:
+    """Print epoch batch training progress."""
+
+    # Zero padding in numerator that aligns with the denominator
+    batch_counter_str = str(batch_counter).zfill(len(str(batch_total)))
+    batch_message = f"Batch progress: {batch_counter_str}/{batch_total}"
+
+    # Clear the previous line and print over it
+    print(batch_message.ljust(40), end="\r", flush=True)
