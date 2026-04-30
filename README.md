@@ -107,3 +107,40 @@ by Akash Nagaraj. To train the model on your machine, follow the steps below.
 4. Move the extracted folder `archive/` into the folder `data/` in this repo.
 
 > TODO: support kagglehub integration
+
+## Model Training
+
+Once the dataset has been placed in the `data/` folder, the deep learning
+network can begin training and evaluation.
+
+First, start by making sure the correct Python interpreter is selected.
+
+```bash
+$ python --version
+Python 3.12.13
+```
+
+Then, start the training pipeline.
+
+```bash
+python -m signsight train
+```
+
+This will take a while to run, especially if your machine doesn't have a GPU.
+The progress of the current epoch's batch cycling is displayed in real-time so
+you can monitor how fast the model takes to train.
+
+Once the model has been trained, run the model evaluation.
+
+```bash
+python -m signsight eval
+```
+
+Then confirm the model's accuracy is high enough (should be at least 98%).
+
+This will also bring up a confusion matrix plot to show more details on the
+model's accuracy for each dataset class.
+
+If your machine cannot display the plot, you can still view it by opening the
+image `confusion_matrix.png`, which get written to disk after the model
+evaluation is complete.
