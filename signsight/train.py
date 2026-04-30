@@ -12,73 +12,121 @@ from signsight.model import build_model, get_device, split_model
 def train_model() -> None:
     """Run the full training loop and save weights to disk."""
 
+    # Accomodate CUDA devices
     device = get_device()
+
+    # Split dataset into training (80%) and validation (20%) subsets
     train_set, val_set = split_model()
 
+    # Wraps data with proper batch size for training/validation and randomize
+    # image order when grouping batches
     train_loader = DataLoader(train_set, BATCH_SIZE, shuffle=True)
     val_loader = DataLoader(val_set, BATCH_SIZE)
 
+    # NOTE: `val_` is an abbreviation of `validation_`
+
+    # Load weights to device and replace the final layer for the 29 classes
     model = build_model(pretrained=True).to(device)
+
+    # Loss function which measures how wrong the model's predictions are
     criterion = torch.nn.CrossEntropyLoss()
+
+    # Optimizer which reduces losses by carefully adjusting weights
+    # NOTE: learning rate (lr) controls how large each adjustment is
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+
+    # Track the total amount of incorrect predictions across all epochs
+    train_loss_total: float
 
     print(f"Beginning model training loop with {EPOCH_COUNT} epochs...")
 
-    train_loss: float
-
     for epoch in range(EPOCH_COUNT):
-        model.train()
-        train_loss = 0.0
 
-        for images, labels in train_loader:
+        # "Training mode" enables dropout and batch normalization updates
+        model.train()
+
+        # Reset loss totals and batch count for this new epoch
+        train_loss_total = 0.0
+
+        # Get the respective images and labels together for each batch
+        for batch, (images, labels) in enumerate(train_loader):
+
+            # Send this batch's images and labels to the computing device
             images, labels = images.to(device), labels.to(device)
+
+            # Clear gradients from previous batch
             optimizer.zero_grad()
 
+            # Compute losses for this batch
             loss = criterion(model(images), labels)
+
+            # Calculate gradients for this batch
             loss.backward()
 
+            # Update the weights
+            # NOTE: this is where the weights in the .pth file come from
             optimizer.step()
-            train_loss += loss.item()
 
-        val_loss, val_accuracy = _validate(
+            # Accumulate total losses across all batches for display
+            train_loss_total += loss.item()
+
+        # Run model on the validation subset without updating the weights
+        val_loss_total, val_accuracy = _validate(
             model, val_loader, criterion, device, len(val_set)
         )
 
         print(
             f"Epoch {epoch + 1}/{EPOCH_COUNT} "
-            f"| Train Loss: {train_loss / len(train_loader):.4f} "
-            f"| Val Loss: {val_loss:.4f} "
-            f"| Val Accuracy: {val_accuracy:.2f}%"
+            f"| Train Loss: {train_loss_total / len(train_loader):.4f} "
+            f"| Validation Loss: {val_loss_total:.4f} "
+            f"| Validation Accuracy: {val_accuracy*100:.2f}%"
         )
 
+    # Save weights to disk as a .pth file
     torch.save(model.state_dict(), MODEL_PATH)
+
     print(f"Model saved to {MODEL_PATH}")
 
 
 def _validate(
     model: torch.nn.Module,
-    loader: DataLoader,
+    val_loader: DataLoader,
     criterion: torch.nn.CrossEntropyLoss,
     device: torch.device,
     dataset_size: int,
 ) -> tuple[float, float]:
     """Run validation loop and return average loss and accuracy."""
 
-    loss_total: float = 0.0
-    correct_count: int = 0
+    # Track the total amount of losses and correct predictions
+    val_loss_total: float = 0.0
+    correct_predictions_count: int = 0
 
+    # "Evaluation mode" disables dropout and freezes batch normalization
+    # NOTE: this saves memory and speeds up the training pipeline
     model.eval()
 
-    # Disable gradient calculation since this is just calculating the losses
+    # Disable gradient tracking since weights are not being updated here
     with torch.no_grad():
-        for images, labels in loader:
+
+        # Same control flow for images and lables as in train_model()
+        for images, labels in val_loader:
             images, labels = images.to(device), labels.to(device)
             outputs = model(images)
+            val_loss_total += criterion(outputs, labels).item()
 
-            loss_total += criterion(outputs, labels).item()
-            correct_count += (outputs.argmax(1) == labels).sum().item()
+            # Get the index of the highest confidence prediction for each image
+            predictions = outputs.argmax(dim=1)
 
-    loss_average: float = loss_total / len(loader)
-    accuracy: float = 100 * correct_count / dataset_size
+            # Compare predictions to true labels, producing a boolean tensor
+            correct_mask = predictions == labels.to(device)
 
-    return loss_average, accuracy
+            # Count the number of truthy values and add it to the total count
+            correct_predictions_count += correct_mask.sum().item()
+
+    # Average out all the losses
+    val_loss_average: float = val_loss_total / len(val_loader)
+
+    # Get the ratio of accurate predictions
+    val_accuracy: float = correct_predictions_count / dataset_size
+
+    return val_loss_average, val_accuracy
