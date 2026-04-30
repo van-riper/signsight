@@ -9,7 +9,7 @@ from sklearn.metrics import confusion_matrix as sklearn_cm
 from torch.utils.data import DataLoader
 from torchvision import datasets
 
-from signsight.const import BATCH_SIZE, DATASET_PATH, MODEL_PATH
+from signsight.const import BATCH_SIZE, DATASET_PATH, FIGURE_PATH, MODEL_PATH
 from signsight.model import get_device, load_model
 from signsight.preprocess import get_transform
 from signsight.train import _print_batch_progress
@@ -102,4 +102,17 @@ def _plot_confusion_matrix(
 
     plt.title("SignSight Deep Learning Model Confusion Matrix")
     plt.tight_layout()
-    plt.show()
+
+    # Save the confusion matrix to disk
+    plt.savefig(FIGURE_PATH, dpi=150)
+    print("Confusion matrix figure saved to: confusion_matrix.png")
+
+    # Attempt to show interactively if a display is available
+    try:
+        import matplotlib
+
+        if matplotlib.get_backend() != "agg":
+            plt.show()
+
+    except UserWarning:
+        print("warning: cannot display figure, open the image file instead")
