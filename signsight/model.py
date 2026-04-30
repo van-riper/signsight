@@ -13,10 +13,10 @@ from signsight.preprocess import get_transform
 def build_model(pretrained: bool) -> torch.nn.Module:
     """Build the model weights."""
 
-    # Use
     weights = models.ResNet18_Weights.DEFAULT if pretrained else None
 
     model = models.resnet18(weights=weights)
+
     model.fc = torch.nn.Linear(model.fc.in_features, CLASS_COUNT)
 
     return model
@@ -31,6 +31,7 @@ def load_model(path: str, device: torch.device) -> torch.nn.Module:
     model.load_state_dict(torch.load(path, map_location=device))
 
     model.eval()
+
     return model
 
 
@@ -38,7 +39,9 @@ def split_dataset() -> list[Subset]:
     """Split the dataset into training and validation subsets."""
 
     transform = get_transform()
+
     dataset = datasets.ImageFolder(DATASET_PATH, transform)
+
     val_size = int(VAL_SPLIT * len(dataset))
 
     return random_split(dataset, [len(dataset) - val_size, val_size])
