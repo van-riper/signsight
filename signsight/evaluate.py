@@ -2,7 +2,10 @@
 Model performance and accuracy testing.
 """
 
+import matplotlib.pyplot as plt
 import torch
+from sklearn.metrics import ConfusionMatrixDisplay
+from sklearn.metrics import confusion_matrix as sklearn_cm
 from torch.utils.data import DataLoader
 from torchvision import datasets
 
@@ -43,7 +46,7 @@ def evaluate_model() -> None:
 
     print(f"Evaluation accuracy: {eval_accuracy*100:.2f}%")
 
-    # TODO: plot confusion matrix with scikit-learn
+    _plot_confusion_matrix(predictions, labels, dataset_full.classes)
 
 
 def _collect_predictions(
@@ -77,3 +80,26 @@ def _collect_predictions(
 
     # Concatenate predictions and labels from all batches into single tensors
     return torch.cat(predictions_superset), torch.cat(labels_superset)
+
+
+def _plot_confusion_matrix(
+    predictions: torch.Tensor,
+    labels: torch.Tensor,
+    dataset_class_names: list[str],
+) -> None:
+    """Plot and display a confusion matrix using matplotlib."""
+
+    # Convert tensors to numpy arrays for scikit-learn
+    confusion_matrix = sklearn_cm(labels.numpy(), predictions.numpy())
+
+    # Create a visualization the confusion matrix
+    confusion_matrix_display = ConfusionMatrixDisplay(
+        confusion_matrix=confusion_matrix, display_labels=dataset_class_names
+    )
+
+    # Rotate x-axis labels to prevent overlap across 29 classes
+    confusion_matrix_display.plot(xticks_rotation=45)
+
+    plt.title("SignSight Deep Learning Model Confusion Matrix")
+    plt.tight_layout()
+    plt.show()
