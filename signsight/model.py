@@ -27,8 +27,11 @@ def load_model(path: str, device: torch.device) -> torch.nn.Module:
 
     model = build_model(pretrained=False)
 
-    # map_location ensures GPU-trained weights load correctly on CPU
+    # Ensure GPU-trained weights load correctly on CPU with map_location
     model.load_state_dict(torch.load(path, map_location=device))
+
+    # Move the model to the right device
+    model.to(device)
 
     model.eval()
 

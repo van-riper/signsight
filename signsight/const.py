@@ -4,11 +4,14 @@ Constants used by the training and interface pipelines.
 
 from pathlib import Path
 
-# Paths to the dataset and weights
+# Path to the training dataset folder
 DATASET_PATH: str = str(
     Path("data/archive/asl_alphabet_train/asl_alphabet_train").resolve()
 )
+
+# Paths to the weights and confusion matrix figure
 MODEL_PATH: str = str(Path("models/signsight.pth").resolve())
+FIGURE_PATH: str = str(Path("confusion_matrix.png").resolve())
 
 # Training loop lasts 10 epochs
 EPOCH_COUNT: int = 10
