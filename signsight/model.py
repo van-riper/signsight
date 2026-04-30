@@ -34,7 +34,7 @@ def load_model(path: str, device: torch.device) -> torch.nn.Module:
     return model
 
 
-def split_model() -> list[Subset]:
+def split_dataset() -> list[Subset]:
     """Split the dataset into training and validation subsets."""
 
     transform = get_transform()

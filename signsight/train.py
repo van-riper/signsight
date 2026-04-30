@@ -6,7 +6,7 @@ import torch
 from torch.utils.data import DataLoader
 
 from signsight.const import BATCH_SIZE, EPOCH_COUNT, MODEL_PATH
-from signsight.model import build_model, get_device, split_model
+from signsight.model import build_model, get_device, split_dataset
 
 
 def train_model() -> None:
@@ -16,7 +16,7 @@ def train_model() -> None:
     device = get_device()
 
     # Split dataset into training (80%) and validation (20%) subsets
-    train_set, val_set = split_model()
+    train_set, val_set = split_dataset()
 
     # Wraps data with proper batch size for training/validation and randomize
     # image order when grouping batches
