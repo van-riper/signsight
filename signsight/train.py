@@ -10,6 +10,7 @@ from signsight.const import (
     BATCH_SIZE,
     DATASET_PATH,
     EPOCH_COUNT,
+    MODEL_PATH,
     VAL_SPLIT,
 )
 from signsight.model import build_model, get_device
@@ -36,5 +37,26 @@ def train_model() -> None:
     criterion = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
+    train_loss: float
+
     for epoch in range(EPOCH_COUNT):
-        pass
+        model.train()
+        train_loss = 0.0
+
+        for images, labels in train_loader:
+            images, labels = images.to(device), labels.to(device)
+            optimizer.zero_grad()
+
+            loss = criterion(model(images), labels)
+            loss.backward()
+
+            optimizer.step()
+            train_loss += loss.item()
+
+        print(
+            f"Epoch {epoch + 1}/{EPOCH_COUNT} "
+            f"| Train Loss: {train_loss / len(train_loader):.4f} "
+        )
+
+    torch.save(model.state_dict(), MODEL_PATH)
+    print(f"Model saved to {MODEL_PATH}")
