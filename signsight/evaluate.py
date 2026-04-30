@@ -4,6 +4,7 @@ Model performance and accuracy testing.
 
 import matplotlib.pyplot as plt
 import torch
+from matplotlib import get_backend
 from sklearn.metrics import ConfusionMatrixDisplay
 from sklearn.metrics import confusion_matrix as sklearn_cm
 from torch.utils.data import DataLoader
@@ -117,12 +118,6 @@ def _plot_confusion_matrix(
     plt.savefig(FIGURE_PATH, dpi=150, bbox_inches="tight")
     print("Confusion matrix figure saved to: confusion_matrix.png")
 
-    # Attempt to show interactively if a display is available
-    try:
-        import matplotlib
-
-        if matplotlib.get_backend() != "agg":
-            plt.show()
-
-    except UserWarning:
-        print("warning: cannot display figure, open the image file instead")
+    # Display the plot if the backend allows it
+    if get_backend().lower() not in ("agg", "pdf", "svg", "ps"):
+        plt.show()
