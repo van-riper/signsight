@@ -2,9 +2,23 @@
 
 import torch
 from torch.utils.data import DataLoader
+from torchvision.datasets import ImageFolder
 
-from ..const import BATCH_SIZE, EPOCH_COUNT, MODEL_PATH
-from .utils import build_model, get_device, print_batch_progress, split_dataset
+from ..const import (
+    BATCH_SIZE,
+    DATASET_TEST_PATH,
+    DATASET_TRAIN_PATH,
+    EPOCH_COUNT,
+    MODEL_PATH,
+)
+from .utils import (
+    build_model,
+    get_device,
+    get_transform,
+    print_batch_progress,
+)
+
+# from .utils import split_dataset
 
 
 def train_model() -> None:
@@ -13,15 +27,21 @@ def train_model() -> None:
     # Accomodate CUDA devices
     device = get_device()
 
-    # Split dataset into training (80%) and validation (20%) subsets
-    train_set, val_set = split_dataset()
+    dataset_train = ImageFolder(
+        DATASET_TRAIN_PATH, transform=get_transform(training=True)
+    )
+    dataset_val = ImageFolder(
+        DATASET_TEST_PATH, transform=get_transform(training=False)
+    )
+
+    # dataset_train, dataset_val = split_dataset()
 
     # Wraps data with proper batch size for training/validation
     # and randomize image order when grouping batches
-    train_loader = DataLoader(train_set, BATCH_SIZE, shuffle=True)
-    val_loader = DataLoader(val_set, BATCH_SIZE)
+    dataloader_train = DataLoader(dataset_train, BATCH_SIZE, shuffle=True)
+    dataloader_val = DataLoader(dataset_val, BATCH_SIZE)
 
-    # NOTE: `val_` is an abbreviation of `validation_`
+    # NOTE: `_val` is an abbreviation of `_validation`
 
     # Load weights to device and replace the final layer for the 29 classes
     model = build_model(pretrained=True).to(device)
@@ -48,7 +68,7 @@ def train_model() -> None:
         train_loss_total = 0.0
 
         # Get the respective images and labels together for each batch
-        for batch, (images, labels) in enumerate(train_loader):
+        for batch, (images, labels) in enumerate(dataloader_train):
 
             # Send this batch's images and labels to the computing device
             images, labels = images.to(device), labels.to(device)
@@ -70,16 +90,16 @@ def train_model() -> None:
             # Accumulate total losses across all batches for display
             train_loss_total += loss.item()
 
-            print_batch_progress(batch + 1, len(train_loader))
+            print_batch_progress(batch + 1, len(dataloader_train))
 
         # Run model on the validation subset without updating the weights
         val_loss_total, val_accuracy = _validate(
-            model, val_loader, criterion, device, len(val_set)
+            model, dataloader_val, criterion, device, len(dataset_val)
         )
 
         print(
             f"Epoch {epoch + 1}/{EPOCH_COUNT} "
-            f"| Train Loss: {train_loss_total / len(train_loader):.4f} "
+            f"| Train Loss: {train_loss_total / len(dataloader_train):.4f} "
             f"| Validation Loss: {val_loss_total:.4f} "
             f"| Validation Accuracy: {val_accuracy*100:.2f}%"
         )
@@ -92,10 +112,10 @@ def train_model() -> None:
 
 def _validate(
     model: torch.nn.Module,
-    val_loader: DataLoader,
+    dataloader_val: DataLoader,
     criterion: torch.nn.CrossEntropyLoss,
     device: torch.device,
-    dataset_size: int,
+    dataset_val_size: int,
 ) -> tuple[float, float]:
     """Run validation loop and return average loss and accuracy."""
 
@@ -112,7 +132,7 @@ def _validate(
     with torch.no_grad():
 
         # Same control flow for images and lables as in train_model()
-        for images, labels in val_loader:
+        for images, labels in dataloader_val:
             images, labels = images.to(device), labels.to(device)
             outputs = model(images)
             val_loss_total += criterion(outputs, labels).item()
@@ -127,9 +147,9 @@ def _validate(
             correct_predictions_count += correct_mask.sum().item()
 
     # Average out all the losses
-    val_loss_average: float = val_loss_total / len(val_loader)
+    val_loss_average: float = val_loss_total / len(dataloader_val)
 
     # Get the ratio of accurate predictions
-    val_accuracy: float = correct_predictions_count / dataset_size
+    val_accuracy: float = correct_predictions_count / dataset_val_size
 
     return val_loss_average, val_accuracy

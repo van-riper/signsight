@@ -81,7 +81,7 @@ pip install -r requirements.txt
 
 This program's deep learning model is configured for the ASL-HG dataset, which
 you can read more about in this
-[NIH Data Brief ](https://pmc.ncbi.nlm.nih.gov/articles/PMC12877850/).
+[NIH Data Brief](https://pmc.ncbi.nlm.nih.gov/articles/PMC12877850/).
 To download the dataset onto your machine, follow these steps:
 
 1. Download the dataset at the

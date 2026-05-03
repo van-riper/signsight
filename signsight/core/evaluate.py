@@ -8,7 +8,7 @@ from sklearn.metrics import confusion_matrix as sklearn_cm
 from torch.utils.data import DataLoader
 from torchvision import datasets
 
-from ..const import BATCH_SIZE, DATASET_PATH, FIGURE_PATH, MODEL_PATH
+from ..const import BATCH_SIZE, DATASET_RAW_PATH, FIGURE_PATH, MODEL_PATH
 from .utils import get_device, get_transform, load_model, print_batch_progress
 
 
@@ -19,7 +19,9 @@ def evaluate_model() -> None:
     device = get_device()
 
     # Load the entire dataset (unlike for training, this doesn't split it)
-    dataset_full = datasets.ImageFolder(DATASET_PATH, transform=get_transform())
+    dataset_full = datasets.ImageFolder(
+        DATASET_RAW_PATH, transform=get_transform(training=False)
+    )
 
     # Wrap data and set the size of each batch
     loader_eval = DataLoader(dataset_full, batch_size=BATCH_SIZE)
