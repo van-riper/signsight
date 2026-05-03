@@ -10,8 +10,6 @@ from ..const import (
     BATCH_SIZE,
     DATASET_TEST_PATH,
     DATASET_TRAIN_PATH,
-    EPOCH_COUNT,
-    LEARNING_RATE,
     MODEL_PATH,
 )
 from .utils import (
@@ -23,6 +21,13 @@ from .utils import (
 )
 
 # from .utils import split_dataset
+
+
+# Training loop lasts 10 epochs
+EPOCH_COUNT: int = 10
+
+# Learning rate for the optimizer function
+LEARNING_RATE: float = 0.0001
 
 
 def train_model() -> None:

@@ -6,7 +6,10 @@ import torch
 from torch.utils.data import Subset, random_split
 from torchvision import datasets, models, transforms
 
-from ..const import CLASS_COUNT, DATASET_RAW_PATH, IMAGE_SIZE, VAL_SPLIT
+from ..const import CLASS_COUNT, DATASET_RAW_PATH, IMAGE_SIZE
+
+# Reserve 20% of the dataset for validation testing
+VAL_SPLIT: float = 0.2
 
 
 def get_device() -> torch.device:
