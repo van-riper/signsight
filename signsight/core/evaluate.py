@@ -1,5 +1,7 @@
 """Model performance and accuracy testing."""
 
+from time import time
+
 import matplotlib.pyplot as plt
 import torch
 from matplotlib import get_backend
@@ -9,11 +11,21 @@ from torch.utils.data import DataLoader
 from torchvision import datasets
 
 from ..const import BATCH_SIZE, DATASET_RAW_PATH, FIGURE_PATH, MODEL_PATH
-from .utils import get_device, get_transform, load_model, print_batch_progress
+from .utils import (
+    get_device,
+    get_transform,
+    load_model,
+    print_batch_progress,
+    print_time_elapsed,
+)
 
 
 def evaluate_model() -> None:
     """Load saved model and print accuracy and confusion matrix."""
+
+    print("Evaluating trained model accuracy...")
+
+    time_start_seconds = time()
 
     # Accomodate CUDA devices
     device = get_device()
@@ -42,6 +54,12 @@ def evaluate_model() -> None:
 
     # Get the ratio of correct predictions
     accuracy_eval: float = correct_predictions_count / len(labels)
+
+    print("Evaluation complete!")
+
+    time_stop_seconds = time()
+
+    print_time_elapsed(time_start_seconds, time_stop_seconds)
 
     print(f"Evaluation accuracy: {accuracy_eval*100:.2f}%")
 

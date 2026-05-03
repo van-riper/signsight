@@ -1,5 +1,7 @@
 """Model training and validation."""
 
+from time import time
+
 import torch
 from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
@@ -16,6 +18,7 @@ from .utils import (
     get_device,
     get_transform,
     print_batch_progress,
+    print_time_elapsed,
 )
 
 # from .utils import split_dataset
@@ -23,6 +26,8 @@ from .utils import (
 
 def train_model() -> None:
     """Run the full training loop and save weights to disk."""
+
+    time_start_seconds = time()
 
     # Accomodate CUDA devices
     device = get_device()
@@ -104,10 +109,16 @@ def train_model() -> None:
             f"| Validation Accuracy: {accuracy_val*100:.2f}%"
         )
 
+    print("Training complete!")
+
     # Save weights to disk as a .pth file
     torch.save(model.state_dict(), MODEL_PATH)
 
     print(f"Model saved to {MODEL_PATH}")
+
+    time_stop_seconds = time()
+
+    print_time_elapsed(time_start_seconds, time_stop_seconds)
 
 
 def _validate(
