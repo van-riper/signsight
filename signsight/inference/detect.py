@@ -4,12 +4,14 @@ from typing import Any
 
 import cv2
 import mediapipe as mp
+import numpy as np
 from cv2.typing import MatLike
 from mediapipe.tasks import python as mp_python
 from mediapipe.tasks.python import vision as mp_vision
 
 from ..const import HAND_LANDMARKER_PATH, ROI_PADDING
 
+type HandTuple = tuple[MatLike | None, Any]
 type CoordTuple = tuple[MatLike, tuple[int, int]]
 
 
@@ -28,7 +30,7 @@ def create_hand_detector() -> Any:
     return mp_vision.HandLandmarker.create_from_options(options)
 
 
-def detect_hand(detector: Any, frame: MatLike):
+def detect_hand(detector: Any, frame: MatLike) -> HandTuple:
     """Detect a hand in a frame and return the masked ROI and landmarks.
 
     Args:
@@ -54,8 +56,10 @@ def detect_hand(detector: Any, frame: MatLike):
     landmarks = results.hand_landmarks[0]
 
     roi, roi_origin = _crop_roi(frame, landmarks)
-    # masked_roi = _apply_hand_mask(roi, landmarks, (height, width), roi_origin)
-    # return masked_roi, landmarks
+
+    masked_roi = _apply_hand_mask(roi, landmarks, (height, width), roi_origin)
+
+    return masked_roi, landmarks
 
 
 def _crop_roi(frame: MatLike, landmarks: Any) -> CoordTuple:
@@ -83,5 +87,49 @@ def _crop_roi(frame: MatLike, landmarks: Any) -> CoordTuple:
     return frame[y_min:y_max, x_min:x_max], (x_min, y_min)
 
 
-def _apply_hand_mask():
-    pass
+def _apply_hand_mask(
+    roi: MatLike,
+    landmarks: Any,
+    frame_shape: tuple[int, int],
+    roi_origin: tuple[int, int],
+) -> MatLike:
+    """Mask out the background using a convex hull around hand landmarks.
+
+    Args:
+        roi: Cropped hand region of interest.
+        landmarks: MediaPipe hand landmarks.
+        frame_shape: Height and width of the original frame.
+
+    Returns:
+        ROI with background replaced by black pixels.
+    """
+
+    roi_height, roi_width = roi.shape[:2]
+    frame_height, frame_width = frame_shape
+    origin_x, origin_y = roi_origin
+
+    # Convert normalized landmark coordinates to ROI pixel coordinates
+    # by subtracting the ROI's top-left corner position in the frame
+    points = np.array(
+        [
+            [
+                int(lm.x * frame_width) - origin_x,
+                int(lm.y * frame_height) - origin_y,
+            ]
+            for lm in landmarks
+        ],
+        dtype=np.int32,
+    )
+
+    # Clamp points to ROI boundaries
+    points[:, 0] = np.clip(points[:, 0], 0, roi_width)
+    points[:, 1] = np.clip(points[:, 1], 0, roi_height)
+
+    hull = cv2.convexHull(points)
+    mask = np.zeros((roi_height, roi_width), dtype=np.uint8)
+    cv2.fillConvexPoly(mask, hull, 255)
+
+    kernel = np.ones((15, 15), np.uint8)
+    mask = cv2.dilate(mask, kernel, iterations=1)
+
+    return cv2.bitwise_and(roi, roi, mask=mask)
