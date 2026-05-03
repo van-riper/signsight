@@ -2,14 +2,23 @@
 
 from pathlib import Path
 
-# Path to the training dataset folder
-DATASET_PATH: str = str(
-    Path("data/archive/asl_alphabet_train/asl_alphabet_train").resolve()
-)
+# Resolved paths set as strings
+
+# Paths to the dataset subfolders
+DATASET_ROOT_PATH: Path = Path("data/ASL_HG_36000").resolve()
+DATASET_RAW_PATH: str = str(Path(DATASET_ROOT_PATH / "asl_dataset"))
+DATASET_TRAIN_PATH: str = str(Path(DATASET_ROOT_PATH / "asl_processed/train"))
+DATASET_TEST_PATH: str = str(Path(DATASET_ROOT_PATH / "asl_processed/test"))
 
 # Paths to the weights and confusion matrix figure
 MODEL_PATH: str = str(Path("models/signsight.pth").resolve())
 FIGURE_PATH: str = str(Path("confusion_matrix.png").resolve())
+
+# Path to the land landmarker task file
+HAND_LANDMARKER_PATH: str = str(Path("models/hand_landmarker.task").resolve())
+
+
+# Core module
 
 # Training loop lasts 10 epochs
 EPOCH_COUNT: int = 10
@@ -20,8 +29,17 @@ BATCH_SIZE: int = 32
 # Reserve 20% of the dataset for VALidation
 VAL_SPLIT: float = 0.2
 
-# Total comes from the 26-letter alphabet plus SPACE, NOTHING, and DELETE
-CLASS_COUNT: int = 29
+# 36 dataset classes (A-Z plus 0-9)
+CLASS_COUNT: int = 36
 
 # Images are scaled down to 64x64 pixels
-IMAGE_SIZE: int = 64
+IMAGE_SIZE: int = 128
+
+
+# Inference module
+
+# Camera index for the built-in webcam
+CAMERA_INDEX: int = 0
+
+# Inference box padding
+BOX_PADDING: int = 20

@@ -77,36 +77,48 @@ Then, install the remaining required packages.
 pip install -r requirements.txt
 ```
 
-#### Troubleshooting Cached Packages
+### Download Datasets and Landmarks
 
-Sometimes, `pip` will install packages from its cache if the packages have
-previously been downloaded to your machine before. This can create problems if
-the cache contains versions of packages that are not compatible with this
-program. However, this can be avoided by forcing pip to download installed
-packages instead of taking them out of the package cache on your machine.
+This program's deep learning model is configured for the ASL-HG dataset, which
+you can read more about in this
+[NIH Data Brief](https://pmc.ncbi.nlm.nih.gov/articles/PMC12877850/).
 
-If pip is not properly installing the required packages or the program won't
-start, try by deleting this repo clone and redoing the installation process
-from the beginning, except pass `--no-cache-dir` when running `pip install`.
+Additionally, the inference pipeline relies on the MediaPipe hand landmarker
+task. More info can be found in this
+[Google AI Guide](https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker).
 
-```bash
-# Example:
-pip install --no-cache-dir -r requirements.txt
+#### Dataset
+
+To download the dataset onto your machine, follow these steps:
+
+1. Download the dataset at the
+   [download page](https://data.mendeley.com/datasets/j4y5w2c8w9/1).
+2. Extract the zip file in your downloads folder.
+3. Move the subfolder `ASL_HG_36000/`into the folder `data/` in this repo.
+4. Extract both `ASL_Processed_Images.zip` and `ASL_Raw_Images.zip` inside the
+   `ASL_HG_36000/` folder. There should now be two folders called `asl_dataset/`
+   and `asl_processed/` within `ASL_HG_36000/`.
+
+Your `data/` folder should look like this:
+
+```text
+data/
+├── ASL_HG_3600/
+│   ├── asl_dataset/
+│   │   └── ...
+│   ├── asl_processed/
+│   │   └── ...
+│   ├── ASL_Processed_Images.zip
+│   └── ASL_Raw_images.zip
+└── .gitkeep
 ```
 
-### Download the Dataset
+#### Landmarks
 
-This program's deep learning model is configured for the ASL Alphabet dataset
-by Akash Nagaraj. To train the model on your machine, follow the steps below.
+To download the MediaPipe task model, open this link:
+[hand_landmarker.task](https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task)
 
-1. Go to the
-   [ASL Alphabet](https://www.kaggle.com/datasets/grassknoted/asl-alphabet)
-   dataset on Kaggle.
-2. Click the "Download" button and click the "Download dataset as zip" option.
-3. Extract `archive.zip` in your downloads folder.
-4. Move the extracted folder `archive/` into the folder `data/` in this repo.
-
-> TODO: support kagglehub integration
+Then, move `hand_landmarker.task` into the `model/` folder in this repo.
 
 ## Model Training
 
@@ -144,3 +156,22 @@ model's accuracy for each dataset class.
 If your machine cannot display the plot, you can still view it by opening the
 image `confusion_matrix.png`, which get written to disk after the model
 evaluation is complete.
+
+## Troubleshooting
+
+### Pip Cached Packages
+
+Sometimes, `pip` will install packages from its cache if the packages have
+previously been downloaded to your machine before. This can create problems if
+the cache contains versions of packages that are not compatible with this
+program. However, this can be avoided by forcing pip to download installed
+packages instead of taking them out of the package cache on your machine.
+
+If pip is not properly installing the required packages or the program won't
+start, try by deleting this repo clone and redoing the installation process
+from the beginning, except pass `--no-cache-dir` when running `pip install`.
+
+```bash
+# Example:
+pip install --no-cache-dir -r requirements.txt
+```

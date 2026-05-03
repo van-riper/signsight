@@ -2,7 +2,7 @@
 
 import sys
 
-# Must use python 3.12
+# Must use Python 3.12
 if sys.version_info < (3, 12) or sys.version_info >= (3, 13):
     print(f"error: python {sys.version} in use, python 3.12 is required")
     sys.exit(1)
@@ -11,13 +11,13 @@ if sys.version_info < (3, 12) or sys.version_info >= (3, 13):
 from argparse import ArgumentParser
 from pathlib import Path
 
-from signsight.const import DATASET_PATH
+from signsight.const import DATASET_ROOT_PATH
 from signsight.core import evaluate_model, train_model
 
 # Must be able to detect the dataset
-if not Path(DATASET_PATH).exists():
+if not Path(DATASET_ROOT_PATH).exists():
     print("error: extracted database not found:")
-    print("\tThe ASL Language database must be downloaded and")
+    print("\tThe ASL-HG database must be downloaded and")
     print("\textracted into the `data/` folder in this repo.")
     print("\tPlease consult the README for more information.")
     sys.exit(2)
