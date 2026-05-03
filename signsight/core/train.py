@@ -11,6 +11,7 @@ from ..const import (
     DATASET_TEST_PATH,
     DATASET_TRAIN_PATH,
     EPOCH_COUNT,
+    LEARNING_RATE,
     MODEL_PATH,
 )
 from .utils import (
@@ -55,7 +56,7 @@ def train_model() -> None:
     criterion = torch.nn.CrossEntropyLoss()
 
     # Optimizer which reduces losses by carefully adjusting weights
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+    optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
     # NOTE: learning rate (lr) controls how large each adjustment is
 
