@@ -8,7 +8,9 @@ from cv2.typing import MatLike
 from mediapipe.tasks import python as mp_python
 from mediapipe.tasks.python import vision as mp_vision
 
-from ..const import HAND_LANDMARKER_PATH
+from ..const import HAND_LANDMARKER_PATH, ROI_PADDING
+
+type CoordTuple = tuple[MatLike, tuple[int, int]]
 
 
 def create_hand_detector() -> Any:
@@ -51,13 +53,34 @@ def detect_hand(detector: Any, frame: MatLike):
 
     landmarks = results.hand_landmarks[0]
 
-    # roi, roi_origin = _crop_roi(frame, landmarks)
+    roi, roi_origin = _crop_roi(frame, landmarks)
     # masked_roi = _apply_hand_mask(roi, landmarks, (height, width), roi_origin)
     # return masked_roi, landmarks
 
 
-def _crop_roi():
-    pass
+def _crop_roi(frame: MatLike, landmarks: Any) -> CoordTuple:
+    """Crop the hand region from the frame using landmark bounding box.
+
+    Args:
+        frame: BGR frame from the webcam.
+        landmarks: MediaPipe hand landmarks.
+
+    Returns:
+        Cropped and padded region of interest containing the hand.
+    """
+
+    height, width = frame.shape[:2]
+
+    x_coords = [lm.x * width for lm in landmarks]
+    y_coords = [lm.y * height for lm in landmarks]
+
+    # Compute bounding box with padding, clamped to frame boundaries
+    x_min = max(0, int(min(x_coords)) - ROI_PADDING)
+    x_max = min(width, int(max(x_coords)) + ROI_PADDING)
+    y_min = max(0, int(min(y_coords)) - ROI_PADDING)
+    y_max = min(height, int(max(y_coords)) + ROI_PADDING)
+
+    return frame[y_min:y_max, x_min:x_max], (x_min, y_min)
 
 
 def _apply_hand_mask():

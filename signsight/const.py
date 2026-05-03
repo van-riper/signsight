@@ -44,5 +44,5 @@ LEARNING_RATE: float = 0.001
 # Camera index for the built-in webcam
 CAMERA_INDEX: int = 0
 
-# Inference box padding
-BOX_PADDING: int = 20
+# Inference ROI box padding
+ROI_PADDING: int = 20
