@@ -35,6 +35,9 @@ CLASS_COUNT: int = 36
 # Images are scaled down to 64x64 pixels
 IMAGE_SIZE: int = 128
 
+# Learning rate for the optimizer function
+LEARNING_RATE: float = 0.001
+
 
 # Inference module
 
