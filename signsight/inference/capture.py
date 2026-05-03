@@ -3,7 +3,8 @@
 from cv2 import VideoCapture, destroyAllWindows
 from cv2.typing import MatLike
 
-from ..const import CAMERA_INDEX
+# Camera index for the built-in webcam
+CAMERA_INDEX: int = 0
 
 
 def open_camera() -> VideoCapture:
