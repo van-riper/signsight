@@ -15,7 +15,7 @@ MODEL_PATH: str = str(Path("models/signsight.pth").resolve())
 FIGURE_PATH: str = str(Path("confusion_matrix.png").resolve())
 
 # Path to the land landmarker task file
-HAND_LANDMARKER_PATH = "models/hand_landmarker.task"
+HAND_LANDMARKER_PATH: str = str(Path("models/hand_landmarker.task").resolve())
 
 
 # Core module
