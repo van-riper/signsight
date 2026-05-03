@@ -27,7 +27,7 @@ from .utils import (
 EPOCH_COUNT: int = 10
 
 # Learning rate for the optimizer function
-LEARNING_RATE: float = 0.001
+LEARNING_RATE: float = 0.0001
 
 
 def train_model() -> None:
