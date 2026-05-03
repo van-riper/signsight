@@ -55,7 +55,7 @@ def train_model() -> None:
     # NOTE: learning rate (lr) controls how large each adjustment is
 
     # Track the total amount of incorrect predictions across all epochs
-    train_loss_total: float
+    loss_total_train: float
 
     print(f"Beginning model training loop with {EPOCH_COUNT} epochs...")
 
@@ -65,7 +65,7 @@ def train_model() -> None:
         model.train()
 
         # Reset loss totals and batch count for this new epoch
-        train_loss_total = 0.0
+        loss_total_train = 0.0
 
         # Get the respective images and labels together for each batch
         for batch, (images, labels) in enumerate(dataloader_train):
@@ -88,20 +88,20 @@ def train_model() -> None:
             # NOTE: this is where the weights in the .pth file come from
 
             # Accumulate total losses across all batches for display
-            train_loss_total += loss.item()
+            loss_total_train += loss.item()
 
             print_batch_progress(batch + 1, len(dataloader_train))
 
         # Run model on the validation subset without updating the weights
-        val_loss_total, val_accuracy = _validate(
+        loss_total_val, accuracy_val = _validate(
             model, dataloader_val, criterion, device, len(dataset_val)
         )
 
         print(
             f"Epoch {epoch + 1}/{EPOCH_COUNT} "
-            f"| Train Loss: {train_loss_total / len(dataloader_train):.4f} "
-            f"| Validation Loss: {val_loss_total:.4f} "
-            f"| Validation Accuracy: {val_accuracy*100:.2f}%"
+            f"| Train Loss: {loss_total_train / len(dataloader_train):.4f} "
+            f"| Validation Loss: {loss_total_val:.4f} "
+            f"| Validation Accuracy: {accuracy_val*100:.2f}%"
         )
 
     # Save weights to disk as a .pth file
@@ -120,7 +120,7 @@ def _validate(
     """Run validation loop and return average loss and accuracy."""
 
     # Track the total amount of losses and correct predictions
-    val_loss_total: float = 0.0
+    loss_total_val: float = 0.0
     correct_predictions_count: int = 0
 
     # "Evaluation mode" disables dropout and freezes batch normalization
@@ -135,7 +135,7 @@ def _validate(
         for images, labels in dataloader_val:
             images, labels = images.to(device), labels.to(device)
             outputs = model(images)
-            val_loss_total += criterion(outputs, labels).item()
+            loss_total_val += criterion(outputs, labels).item()
 
             # Get the index of the highest confidence prediction for each image
             predictions = outputs.argmax(dim=1)
@@ -147,7 +147,7 @@ def _validate(
             correct_predictions_count += correct_mask.sum().item()
 
     # Average out all the losses
-    val_loss_average: float = val_loss_total / len(dataloader_val)
+    val_loss_average: float = loss_total_val / len(dataloader_val)
 
     # Get the ratio of accurate predictions
     val_accuracy: float = correct_predictions_count / dataset_val_size

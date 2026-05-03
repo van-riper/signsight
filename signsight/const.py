@@ -5,10 +5,10 @@ from pathlib import Path
 # Resolved paths set as strings
 
 # Paths to the dataset subfolders
-_DATASET_ROOT: Path = Path("data/ASL_HG_36000").resolve()
-DATASET_RAW_PATH: str = str(Path(_DATASET_ROOT / "asl_dataset"))
-DATASET_TRAIN_PATH: str = str(Path(_DATASET_ROOT / "asl_processed/train"))
-DATASET_TEST_PATH: str = str(Path(_DATASET_ROOT / "asl_processed/test"))
+DATASET_ROOT_PATH: Path = Path("data/ASL_HG_36000").resolve()
+DATASET_RAW_PATH: str = str(Path(DATASET_ROOT_PATH / "asl_dataset"))
+DATASET_TRAIN_PATH: str = str(Path(DATASET_ROOT_PATH / "asl_processed/train"))
+DATASET_TEST_PATH: str = str(Path(DATASET_ROOT_PATH / "asl_processed/test"))
 
 # Paths to the weights and confusion matrix figure
 MODEL_PATH: str = str(Path("models/signsight.pth").resolve())

@@ -24,46 +24,46 @@ def evaluate_model() -> None:
     )
 
     # Wrap data and set the size of each batch
-    loader_eval = DataLoader(dataset_full, batch_size=BATCH_SIZE)
+    dataloader_eval = DataLoader(dataset_full, batch_size=BATCH_SIZE)
 
     # Load trained weights from disk
     model_trained = load_model(MODEL_PATH, device)
 
     # Get the predictions
     predictions, labels = _collect_predictions(
-        model_trained, loader_eval, device
+        model_trained, dataloader_eval, device
     )
 
     # Creat a boolean tensor of predictions onto their correct labels
-    correct_mask = predictions == labels
+    correct_predictions_mask = predictions == labels
 
     # Get the sum of all correct predictions
-    correct_predictions_count = correct_mask.sum().item()
+    correct_predictions_count = correct_predictions_mask.sum().item()
 
     # Get the ratio of correct predictions
-    eval_accuracy: float = correct_predictions_count / len(labels)
+    accuracy_eval: float = correct_predictions_count / len(labels)
 
-    print(f"Evaluation accuracy: {eval_accuracy*100:.2f}%")
+    print(f"Evaluation accuracy: {accuracy_eval*100:.2f}%")
 
     _plot_confusion_matrix(predictions, labels, dataset_full.classes)
 
 
 def _collect_predictions(
     model_trained: torch.nn.Module,
-    loader_eval: DataLoader,
+    dataloader_eval: DataLoader,
     device: torch.device,
 ) -> tuple[torch.Tensor, torch.Tensor]:
     """Run model over dataset and return all predictions and labels."""
 
     predictions_superset = []
     labels_superset = []
-    loader_eval_size = len(loader_eval)
+    dataloader_eval_size = len(dataloader_eval)
 
     print("Collecting predictions of trained model...")
 
     # Disable gradient tracking since weights are not being updated here
     with torch.no_grad():
-        for batch, (images, labels) in enumerate(loader_eval):
+        for batch, (images, labels) in enumerate(dataloader_eval):
             images = images.to(device)
 
             # Get confidence scores for each class
@@ -75,7 +75,7 @@ def _collect_predictions(
             predictions_superset.append(predictions)
             labels_superset.append(labels)
 
-            print_batch_progress(batch + 1, loader_eval_size)
+            print_batch_progress(batch + 1, dataloader_eval_size)
 
     # Concatenate predictions and labels from all batches into single tensors
     return torch.cat(predictions_superset), torch.cat(labels_superset)

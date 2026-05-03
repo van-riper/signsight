@@ -79,9 +79,11 @@ def split_dataset() -> list[Subset]:
 
     dataset = datasets.ImageFolder(DATASET_RAW_PATH, transform)
 
-    val_size = int(VAL_SPLIT * len(dataset))
+    dataset_val_size = int(len(dataset) * VAL_SPLIT)
 
-    return random_split(dataset, [len(dataset) - val_size, val_size])
+    return random_split(
+        dataset, [len(dataset) - dataset_val_size, dataset_val_size]
+    )
 
 
 def print_batch_progress(batch_counter: int, batch_total: int) -> None:
