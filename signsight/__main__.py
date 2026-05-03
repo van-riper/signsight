@@ -4,7 +4,8 @@ import sys
 
 # Must use Python 3.12
 if sys.version_info < (3, 12) or sys.version_info >= (3, 13):
-    print(f"error: python {sys.version} in use, python 3.12 is required")
+    VERSION = f"{sys.version_info.major}.{sys.version_info.minor}"
+    print(f"error: Python {VERSION} in use, SignSight requires Python 3.12")
     sys.exit(1)
 
 

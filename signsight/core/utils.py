@@ -1,5 +1,7 @@
 """Functions for model building, image transforms, and batch progress."""
 
+from datetime import timedelta
+
 import torch
 from torch.utils.data import Subset, random_split
 from torchvision import datasets, models, transforms
@@ -97,3 +99,9 @@ def print_batch_progress(batch_counter: int, batch_total: int) -> None:
 
     # Clear the previous line and print over it
     print(batch_message.ljust(40), end="\r", flush=True)
+
+
+def print_time_elapsed(start_seconds: float, stop_seconds: float) -> None:
+    """Print the formatted time elapsed between `start` and `stop`."""
+
+    print(f"Elapsed time: {timedelta(seconds=stop_seconds-start_seconds)}")
