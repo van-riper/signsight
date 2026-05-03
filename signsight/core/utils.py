@@ -89,9 +89,11 @@ def split_dataset() -> list[Subset]:
 def print_batch_progress(batch_counter: int, batch_total: int) -> None:
     """Print batch training/evaluation progress."""
 
-    # Zero padding in numerator that aligns with the denominator
-    batch_counter_str = str(batch_counter).zfill(len(str(batch_total)))
-    batch_message = f"Batch progress: {batch_counter_str}/{batch_total}"
+    # Whitespace padding in progress quotient and percentage
+    count_str = str(batch_counter).rjust(len(str(batch_total)))
+    ratio_str = f"{count_str}/{batch_total}".rjust(9)
+    progress_percent = f"({(batch_counter / batch_total) * 100:.1f}%)".rjust(8)
+    batch_message = f"Batch progress: {ratio_str} {progress_percent}"
 
     # Clear the previous line and print over it
     print(batch_message.ljust(40), end="\r", flush=True)
