@@ -1,6 +1,4 @@
-"""
-Constants used by the training and interface pipelines.
-"""
+"""Global constants used by the program."""
 
 from pathlib import Path
 
