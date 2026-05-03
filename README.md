@@ -77,11 +77,18 @@ Then, install the remaining required packages.
 pip install -r requirements.txt
 ```
 
-### Download the Dataset
+### Download Datasets and Landmarks
 
 This program's deep learning model is configured for the ASL-HG dataset, which
 you can read more about in this
 [NIH Data Brief](https://pmc.ncbi.nlm.nih.gov/articles/PMC12877850/).
+
+Additionally, the inference pipeline relies on the MediaPipe hand landmarker
+task. More info can be found in this
+[Google AI Guide](https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker).
+
+#### Dataset
+
 To download the dataset onto your machine, follow these steps:
 
 1. Download the dataset at the
@@ -105,6 +112,13 @@ data/
 │   └── ASL_Raw_images.zip
 └── .gitkeep
 ```
+
+#### Landmarks
+
+To download the MediaPipe task model, open this link:
+[hand_landmarker.task](https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task)
+
+Then, move `hand_landmarker.task` into the `model/` folder in this repo.
 
 ## Model Training
 
