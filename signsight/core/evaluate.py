@@ -1,6 +1,4 @@
-"""
-Model performance and accuracy testing.
-"""
+"""Model performance and accuracy testing."""
 
 import matplotlib.pyplot as plt
 import torch
@@ -10,10 +8,8 @@ from sklearn.metrics import confusion_matrix as sklearn_cm
 from torch.utils.data import DataLoader
 from torchvision import datasets
 
-from signsight.const import BATCH_SIZE, DATASET_PATH, FIGURE_PATH, MODEL_PATH
-from signsight.model import get_device, load_model
-from signsight.preprocess import get_transform
-from signsight.train import _print_batch_progress
+from ..const import BATCH_SIZE, DATASET_PATH, FIGURE_PATH, MODEL_PATH
+from .utils import get_device, get_transform, load_model, print_batch_progress
 
 
 def evaluate_model() -> None:
@@ -77,7 +73,7 @@ def _collect_predictions(
             predictions_superset.append(predictions)
             labels_superset.append(labels)
 
-            _print_batch_progress(batch + 1, loader_eval_size)
+            print_batch_progress(batch + 1, loader_eval_size)
 
     # Concatenate predictions and labels from all batches into single tensors
     return torch.cat(predictions_superset), torch.cat(labels_superset)

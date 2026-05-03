@@ -1,6 +1,4 @@
-"""
-Main executable script for SignSight.
-"""
+"""Main CLI interface."""
 
 import sys
 
@@ -14,12 +12,11 @@ from argparse import ArgumentParser
 from pathlib import Path
 
 from signsight.const import DATASET_PATH
-from signsight.evaluate import evaluate_model
-from signsight.train import train_model
+from signsight.core import evaluate_model, train_model
 
 # Must be able to detect the dataset
 if not Path(DATASET_PATH).exists():
-    print("error: extracted database not found, read this message:")
+    print("error: extracted database not found:")
     print("\tThe ASL Language database must be downloaded and")
     print("\textracted into the `data/` folder in this repo.")
     print("\tPlease consult the README for more information.")
