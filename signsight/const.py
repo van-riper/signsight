@@ -10,12 +10,12 @@ DATASET_RAW_PATH: str = str(Path(DATASET_ROOT_PATH / "asl_dataset"))
 DATASET_TRAIN_PATH: str = str(Path(DATASET_ROOT_PATH / "asl_processed/train"))
 DATASET_TEST_PATH: str = str(Path(DATASET_ROOT_PATH / "asl_processed/test"))
 
-# Paths to the weights and confusion matrix figure
+# Paths to the weights and landmark models
 MODEL_PATH: str = str(Path("models/signsight.pth").resolve())
-FIGURE_PATH: str = str(Path("confusion_matrix.png").resolve())
-
-# Path to the land landmarker task file
 HAND_LANDMARKER_PATH: str = str(Path("models/hand_landmarker.task").resolve())
+
+# Path to the confusion matrix image file
+FIGURE_PATH: str = str(Path("confusion_matrix.png").resolve())
 
 
 # Core module
