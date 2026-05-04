@@ -105,5 +105,24 @@ def draw_landmarks(frame: MatLike, landmarks: Any) -> MatLike:
     return frame
 
 
-def show_no_hand_message():
-    pass
+def draw_no_hand_message(frame: MatLike) -> MatLike:
+    """Draw a message on the frame when no hand is detected.
+
+    Args:
+        frame: BGR frame from the webcam.
+
+    Returns:
+        Frame with no hand message drawn on it.
+    """
+
+    cv2.putText(
+        frame,
+        "No hand detected",
+        (10, 40),
+        FONT,
+        1.0,
+        TEXT_COLOR,
+        FONT_THICKNESS,
+    )
+
+    return frame
