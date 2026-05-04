@@ -1,29 +1,37 @@
-"""
-Constants used by the training and interface pipelines.
-"""
+"""Global constants used by the program."""
 
 from pathlib import Path
 
-# Path to the training dataset folder
-DATASET_PATH: str = str(
-    Path("data/archive/asl_alphabet_train/asl_alphabet_train").resolve()
-)
+# Resolved paths set as strings
 
-# Paths to the weights and confusion matrix figure
+# TODO: keep paths as Path object and handle string conversions internally
+# Paths to the dataset subfolders
+DATASET_ROOT_PATH: Path = Path("data/ASL_HG_36000").resolve()
+DATASET_RAW_PATH: str = str(Path(DATASET_ROOT_PATH / "asl_dataset"))
+DATASET_TRAIN_PATH: str = str(Path(DATASET_ROOT_PATH / "asl_processed/train"))
+DATASET_TEST_PATH: str = str(Path(DATASET_ROOT_PATH / "asl_processed/test"))
+
+# Paths to the weights and landmark models
 MODEL_PATH: str = str(Path("models/signsight.pth").resolve())
+HAND_LANDMARKER_PATH: str = str(Path("models/hand_landmarker.task").resolve())
+
+# Path to the confusion matrix image file
 FIGURE_PATH: str = str(Path("confusion_matrix.png").resolve())
 
-# Training loop lasts 10 epochs
-EPOCH_COUNT: int = 10
 
-# Each batch contains 32 image-label pairs
-BATCH_SIZE: int = 32
+# Core module
 
-# Reserve 20% of the dataset for VALidation
-VAL_SPLIT: float = 0.2
+# 36 dataset classes (A-Z plus 0-9)
+CLASS_COUNT: int = 36
 
-# Total comes from the 26-letter alphabet plus SPACE, NOTHING, and DELETE
-CLASS_COUNT: int = 29
+# Images are scaled down to 128x128 pixels
+IMAGE_SIZE: int = 128
 
-# Images are scaled down to 64x64 pixels
-IMAGE_SIZE: int = 64
+
+# Inference module
+
+# Set ROI box padding
+ROI_PADDING: int = 20
+
+# Run model inference once every 10 frames
+INFERENCE_INTERVAL: int = 10

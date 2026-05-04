@@ -1,29 +1,49 @@
-"""
-Model training and validation.
-"""
+"""Model training and validation."""
+
+from time import time
 
 import torch
 from torch.utils.data import DataLoader
+from torchvision.datasets import ImageFolder
 
-from signsight.const import BATCH_SIZE, EPOCH_COUNT, MODEL_PATH
-from signsight.model import build_model, get_device, split_dataset
+from ..const import DATASET_TEST_PATH, DATASET_TRAIN_PATH, MODEL_PATH
+from .utils import (
+    build_model,
+    get_device,
+    get_transform,
+    print_batch_progress,
+    print_time_elapsed,
+)
+
+# Training loop lasts 10 epochs
+EPOCH_COUNT: int = 10
+
+# Learning rate for the optimizer function
+LEARNING_RATE: float = 0.0001
 
 
-def train_model() -> None:
+# TODO: delegate auxillary logic into separate and smaller functions
+def train_model(batch_size: int) -> None:
     """Run the full training loop and save weights to disk."""
+
+    time_start_seconds = time()
 
     # Accomodate CUDA devices
     device = get_device()
 
-    # Split dataset into training (80%) and validation (20%) subsets
-    train_set, val_set = split_dataset()
+    dataset_train = ImageFolder(
+        DATASET_TRAIN_PATH, transform=get_transform(training=True)
+    )
+    dataset_val = ImageFolder(
+        DATASET_TEST_PATH, transform=get_transform(training=False)
+    )
 
     # Wraps data with proper batch size for training/validation
     # and randomize image order when grouping batches
-    train_loader = DataLoader(train_set, BATCH_SIZE, shuffle=True)
-    val_loader = DataLoader(val_set, BATCH_SIZE)
+    dataloader_train = DataLoader(dataset_train, batch_size, shuffle=True)
+    dataloader_val = DataLoader(dataset_val, batch_size)
 
-    # NOTE: `val_` is an abbreviation of `validation_`
+    # NOTE: `_val` is an abbreviation of `_validation`
 
     # Load weights to device and replace the final layer for the 29 classes
     model = build_model(pretrained=True).to(device)
@@ -32,12 +52,12 @@ def train_model() -> None:
     criterion = torch.nn.CrossEntropyLoss()
 
     # Optimizer which reduces losses by carefully adjusting weights
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+    optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
     # NOTE: learning rate (lr) controls how large each adjustment is
 
     # Track the total amount of incorrect predictions across all epochs
-    train_loss_total: float
+    loss_total_train: float
 
     print(f"Beginning model training loop with {EPOCH_COUNT} epochs...")
 
@@ -47,10 +67,11 @@ def train_model() -> None:
         model.train()
 
         # Reset loss totals and batch count for this new epoch
-        train_loss_total = 0.0
+        loss_total_train = 0.0
 
+        # TODO: refactor batch logic into a separate function
         # Get the respective images and labels together for each batch
-        for batch, (images, labels) in enumerate(train_loader):
+        for batch, (images, labels) in enumerate(dataloader_train):
 
             # Send this batch's images and labels to the computing device
             images, labels = images.to(device), labels.to(device)
@@ -70,39 +91,45 @@ def train_model() -> None:
             # NOTE: this is where the weights in the .pth file come from
 
             # Accumulate total losses across all batches for display
-            train_loss_total += loss.item()
+            loss_total_train += loss.item()
 
-            _print_batch_progress(batch + 1, len(train_loader))
+            print_batch_progress(batch + 1, len(dataloader_train))
 
         # Run model on the validation subset without updating the weights
-        val_loss_total, val_accuracy = _validate(
-            model, val_loader, criterion, device, len(val_set)
+        loss_total_val, accuracy_val = _validate(
+            model, dataloader_val, criterion, device, len(dataset_val)
         )
 
         print(
             f"Epoch {epoch + 1}/{EPOCH_COUNT} "
-            f"| Train Loss: {train_loss_total / len(train_loader):.4f} "
-            f"| Validation Loss: {val_loss_total:.4f} "
-            f"| Validation Accuracy: {val_accuracy*100:.2f}%"
+            f"| Train Loss: {loss_total_train / len(dataloader_train):.4f} "
+            f"| Validation Loss: {loss_total_val:.4f} "
+            f"| Validation Accuracy: {accuracy_val*100:.2f}%"
         )
+
+    print("Training complete!")
 
     # Save weights to disk as a .pth file
     torch.save(model.state_dict(), MODEL_PATH)
 
     print(f"Model saved to {MODEL_PATH}")
 
+    time_stop_seconds = time()
+
+    print_time_elapsed(time_start_seconds, time_stop_seconds)
+
 
 def _validate(
     model: torch.nn.Module,
-    val_loader: DataLoader,
+    dataloader_val: DataLoader,
     criterion: torch.nn.CrossEntropyLoss,
     device: torch.device,
-    dataset_size: int,
+    dataset_val_size: int,
 ) -> tuple[float, float]:
     """Run validation loop and return average loss and accuracy."""
 
     # Track the total amount of losses and correct predictions
-    val_loss_total: float = 0.0
+    loss_total_val: float = 0.0
     correct_predictions_count: int = 0
 
     # "Evaluation mode" disables dropout and freezes batch normalization
@@ -114,10 +141,10 @@ def _validate(
     with torch.no_grad():
 
         # Same control flow for images and lables as in train_model()
-        for images, labels in val_loader:
+        for images, labels in dataloader_val:
             images, labels = images.to(device), labels.to(device)
             outputs = model(images)
-            val_loss_total += criterion(outputs, labels).item()
+            loss_total_val += criterion(outputs, labels).item()
 
             # Get the index of the highest confidence prediction for each image
             predictions = outputs.argmax(dim=1)
@@ -129,20 +156,9 @@ def _validate(
             correct_predictions_count += correct_mask.sum().item()
 
     # Average out all the losses
-    val_loss_average: float = val_loss_total / len(val_loader)
+    val_loss_average: float = loss_total_val / len(dataloader_val)
 
     # Get the ratio of accurate predictions
-    val_accuracy: float = correct_predictions_count / dataset_size
+    val_accuracy: float = correct_predictions_count / dataset_val_size
 
     return val_loss_average, val_accuracy
-
-
-def _print_batch_progress(batch_counter: int, batch_total: int) -> None:
-    """Print epoch batch training progress."""
-
-    # Zero padding in numerator that aligns with the denominator
-    batch_counter_str = str(batch_counter).zfill(len(str(batch_total)))
-    batch_message = f"Batch progress: {batch_counter_str}/{batch_total}"
-
-    # Clear the previous line and print over it
-    print(batch_message.ljust(40), end="\r", flush=True)
