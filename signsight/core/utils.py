@@ -107,4 +107,5 @@ def print_batch_progress(batch_counter: int, batch_total: int) -> None:
 def print_time_elapsed(start_seconds: float, stop_seconds: float) -> None:
     """Print the formatted time elapsed between `start` and `stop`."""
 
-    print(f"Elapsed time: {timedelta(seconds=stop_seconds-start_seconds)}")
+    elapsed_seconds = round(stop_seconds - start_seconds)
+    print(f"Elapsed time: {timedelta(seconds=elapsed_seconds)}")
