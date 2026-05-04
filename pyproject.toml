@@ -18,3 +18,11 @@ dependencies = [
 
 [project.scripts]
 signsight = "signsight.__main__:main"
+
+[tool.pylint.master]
+extension-pkg-allow-list = ["cv2", "mediapipe"]
+
+[tool.pylint.TYPECHECK]
+ignored-modules = ["cv2", "mediapipe"]
+ignored-classes = ["cv2", "mediapipe"]
+
