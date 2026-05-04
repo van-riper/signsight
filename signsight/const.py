@@ -34,3 +34,6 @@ IMAGE_SIZE: int = 128
 
 # Inference ROI box padding
 ROI_PADDING: int = 20
+
+# Run model inference once every N frames
+INFERENCE_INTERVAL: int = 10
