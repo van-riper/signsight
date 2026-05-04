@@ -81,6 +81,7 @@ def _collect_predictions(
 
     # Disable gradient tracking since weights are not being updated here
     with torch.no_grad():
+        # TODO: use batch loop helper function from train.py
         for batch, (images, labels) in enumerate(dataloader_eval):
             images = images.to(device)
 
@@ -116,6 +117,7 @@ def _plot_confusion_matrix(
         confusion_matrix=confusion_matrix, display_labels=dataset_class_names
     )
 
+    # TODO: fix and prettify plot options
     # Plot the display figure
     confusion_matrix_display.plot(
         ax=axes,

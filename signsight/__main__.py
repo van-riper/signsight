@@ -33,6 +33,8 @@ from signsight.inference import (
     read_frame,
 )
 
+# TODO: relocate path assertion logic to another helper module
+# TODO: make more assertions for all the necessary paths
 # Must be able to detect the dataset
 if not Path(DATASET_ROOT_PATH).exists():
     print("error: extracted database not found:")
@@ -42,6 +44,7 @@ if not Path(DATASET_ROOT_PATH).exists():
     sys.exit(2)
 
 
+# TODO: relocate camera logic to another designated module
 def _run_inference_pipeline() -> None:
     """Run the live inference loop."""
 
@@ -82,6 +85,9 @@ def _run_inference_pipeline() -> None:
 
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
+
+
+# TODO: apply Google-style formatting to all function docstrings
 
 
 def main() -> None:

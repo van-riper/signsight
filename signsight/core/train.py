@@ -22,6 +22,7 @@ EPOCH_COUNT: int = 10
 LEARNING_RATE: float = 0.0001
 
 
+# TODO: delegate auxillary logic into separate and smaller functions
 def train_model(batch_size: int) -> None:
     """Run the full training loop and save weights to disk."""
 
@@ -68,6 +69,7 @@ def train_model(batch_size: int) -> None:
         # Reset loss totals and batch count for this new epoch
         loss_total_train = 0.0
 
+        # TODO: refactor batch logic into a separate function
         # Get the respective images and labels together for each batch
         for batch, (images, labels) in enumerate(dataloader_train):
 

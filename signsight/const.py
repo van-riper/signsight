@@ -4,6 +4,7 @@ from pathlib import Path
 
 # Resolved paths set as strings
 
+# TODO: keep paths as Path object and handle string conversions internally
 # Paths to the dataset subfolders
 DATASET_ROOT_PATH: Path = Path("data/ASL_HG_36000").resolve()
 DATASET_RAW_PATH: str = str(Path(DATASET_ROOT_PATH / "asl_dataset"))
@@ -23,14 +24,14 @@ FIGURE_PATH: str = str(Path("confusion_matrix.png").resolve())
 # 36 dataset classes (A-Z plus 0-9)
 CLASS_COUNT: int = 36
 
-# Images are scaled down to 64x64 pixels
+# Images are scaled down to 128x128 pixels
 IMAGE_SIZE: int = 128
 
 
 # Inference module
 
-# Inference ROI box padding
+# Set ROI box padding
 ROI_PADDING: int = 20
 
-# Run model inference once every N frames
+# Run model inference once every 10 frames
 INFERENCE_INTERVAL: int = 10

@@ -57,6 +57,7 @@ def build_model(pretrained: bool) -> torch.nn.Module:
     return model
 
 
+# TODO: set path argument as a Path object
 def load_model(path: str, device: torch.device) -> torch.nn.Module:
     """Load saved model weights from disk."""
 
@@ -73,6 +74,7 @@ def load_model(path: str, device: torch.device) -> torch.nn.Module:
     return model
 
 
+# TODO: also print total progress across all epochs
 def print_batch_progress(batch_counter: int, batch_total: int) -> None:
     """Print batch training/evaluation progress."""
 
