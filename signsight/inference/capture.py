@@ -20,7 +20,7 @@ def open_camera_session(index: int = CAMERA_INDEX) -> CameraSession:
     camera = VideoCapture(index)
 
     if not camera.isOpened():
-        raise RuntimeError(f"Could not open camera at index {index}.")
+        raise RuntimeError(f"error: camera at index {index} not found")
 
     try:
         yield camera

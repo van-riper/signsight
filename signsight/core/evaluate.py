@@ -61,7 +61,7 @@ def evaluate_model(batch_size: int) -> None:
 
     print_time_elapsed(time_start_seconds, time_stop_seconds)
 
-    print(f"Evaluation accuracy: {accuracy_eval*100:.2f}%")
+    print(f"\nEvaluation accuracy: {accuracy_eval*100:.2f}%")
 
     _plot_confusion_matrix(predictions, labels, dataset_full.classes)
 
@@ -81,6 +81,7 @@ def _collect_predictions(
 
     # Disable gradient tracking since weights are not being updated here
     with torch.no_grad():
+        # TODO: use batch loop helper function from train.py
         for batch, (images, labels) in enumerate(dataloader_eval):
             images = images.to(device)
 
@@ -116,6 +117,7 @@ def _plot_confusion_matrix(
         confusion_matrix=confusion_matrix, display_labels=dataset_class_names
     )
 
+    # TODO: fix and prettify plot options
     # Plot the display figure
     confusion_matrix_display.plot(
         ax=axes,
@@ -132,7 +134,7 @@ def _plot_confusion_matrix(
 
     # Save the confusion matrix to disk
     plt.savefig(FIGURE_PATH, dpi=150, bbox_inches="tight")
-    print("Confusion matrix figure saved to: confusion_matrix.png")
+    print(f"Confusion matrix figure saved to: {FIGURE_PATH}")
 
     # Display the plot if the backend allows it
     if get_backend().lower() not in ("agg", "pdf", "svg", "ps"):

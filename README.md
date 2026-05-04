@@ -120,10 +120,11 @@ To download the MediaPipe task model, open this link:
 
 Then, move `hand_landmarker.task` into the `model/` folder in this repo.
 
-## Model Training
+## Usage
 
-Once the dataset has been placed in the `data/` folder, the deep learning
-network can begin training and evaluation.
+### Model Training and Evaluation
+
+After installation, the deep learning network can begin training and evaluation.
 
 First, start by making sure the correct Python interpreter is selected.
 
@@ -142,7 +143,20 @@ This will take a while to run, especially if your machine doesn't have a GPU.
 The progress of the current epoch's batch cycling is displayed in real-time so
 you can monitor how fast the model takes to train.
 
-Once the model has been trained, run the model evaluation.
+The training and evaluation batch size is preset to either **32** or **64**. If
+SignSight detects a CUDA device on your machine, the batch size is set to 64.
+If not, it defaults to 32.
+
+If you want to specify the batch size, pass the `--batch-size` flag to override
+the preset defaults.
+
+```bash
+# Example: set batch size to 128
+python -m signsight --batch-size=128 train
+```
+
+Once the model has been trained, run the model evaluation. Make sure to pass the
+`--batch-size` flag if you want to evaluate using a different batch size.
 
 ```bash
 python -m signsight eval
@@ -156,6 +170,23 @@ model's accuracy for each dataset class.
 If your machine cannot display the plot, you can still view it by opening the
 image `confusion_matrix.png`, which get written to disk after the model
 evaluation is complete.
+
+### Inference Interface
+
+After the model has been trained, you can run the inference interface.
+
+```bash
+python -m signsight run
+```
+
+This will turn on your webcam and feed it into the inference pipeline. Your
+webcam feed will open up in a new window.
+
+Try holding your hand to the camera, you should see the landmarkers rendered
+onto your hand. Then try signing ASL letters, you should see the model's
+prediction drawn on the top right corner of the window.
+
+To quit the inference interface, press "Q" and the program will exit.
 
 ## Troubleshooting
 
