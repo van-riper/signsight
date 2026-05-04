@@ -3,13 +3,9 @@
 from datetime import timedelta
 
 import torch
-from torch.utils.data import Subset, random_split
-from torchvision import datasets, models, transforms
+from torchvision import models, transforms
 
-from ..const import CLASS_COUNT, DATASET_RAW_PATH, IMAGE_SIZE
-
-# Reserve 20% of the dataset for validation testing
-VAL_SPLIT: float = 0.2
+from ..const import CLASS_COUNT, IMAGE_SIZE
 
 
 def get_device() -> torch.device:
@@ -75,20 +71,6 @@ def load_model(path: str, device: torch.device) -> torch.nn.Module:
     model.eval()
 
     return model
-
-
-def split_dataset() -> list[Subset]:
-    """Split the dataset into training and validation subsets."""
-
-    transform = get_transform(training=True)
-
-    dataset = datasets.ImageFolder(DATASET_RAW_PATH, transform)
-
-    dataset_val_size = int(len(dataset) * VAL_SPLIT)
-
-    return random_split(
-        dataset, [len(dataset) - dataset_val_size, dataset_val_size]
-    )
 
 
 def print_batch_progress(batch_counter: int, batch_total: int) -> None:

@@ -15,9 +15,6 @@ from .utils import (
     print_time_elapsed,
 )
 
-# from .utils import split_dataset
-
-
 # Training loop lasts 10 epochs
 EPOCH_COUNT: int = 10
 
@@ -39,8 +36,6 @@ def train_model(batch_size: int) -> None:
     dataset_val = ImageFolder(
         DATASET_TEST_PATH, transform=get_transform(training=False)
     )
-
-    # dataset_train, dataset_val = split_dataset()
 
     # Wraps data with proper batch size for training/validation
     # and randomize image order when grouping batches
