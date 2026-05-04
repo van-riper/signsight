@@ -20,9 +20,6 @@ FIGURE_PATH: str = str(Path("confusion_matrix.png").resolve())
 
 # Core module
 
-# Each batch contains 32 image-label pairs
-BATCH_SIZE: int = 32
-
 # 36 dataset classes (A-Z plus 0-9)
 CLASS_COUNT: int = 36
 
