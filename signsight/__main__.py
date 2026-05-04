@@ -20,7 +20,7 @@ from signsight.const import (
     DATASET_TRAIN_PATH,
     INFERENCE_INTERVAL,
 )
-from signsight.core import evaluate_model, train_model
+from signsight.core import evaluate_model, get_device, train_model
 from signsight.inference import (
     create_hand_detector,
     detect_hand,
@@ -95,8 +95,8 @@ def main() -> None:
         action="store",
         dest="batch_size",
         type=int,
-        default=32,
-        help="Set batch size (default: 32)",
+        default=(32 if get_device().type == "cpu" else 64),
+        help="Set batch size (default: 32 on CPU, 64 on CUDA)",
     )
 
     subparsers = parser.add_subparsers(dest="command")
