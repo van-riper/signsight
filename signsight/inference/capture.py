@@ -1,21 +1,32 @@
 """Webcam feed and frame grabbing."""
 
+from contextlib import contextmanager
+from typing import Generator
+
 from cv2 import VideoCapture, destroyAllWindows
 from cv2.typing import MatLike
+
+type CameraSession = Generator[VideoCapture, None, None]
+
 
 # Camera index for the built-in webcam
 CAMERA_INDEX: int = 0
 
 
-def open_camera() -> VideoCapture:
-    """Open the default webcam and return the capture object."""
+@contextmanager
+def open_camera_session(index: int = CAMERA_INDEX) -> CameraSession:
+    """Open the camera and guarantee cleanup on exit."""
 
-    camera = VideoCapture(CAMERA_INDEX)
+    camera = VideoCapture(index)
 
     if not camera.isOpened():
-        raise RuntimeError(f"Could not open camera at index {CAMERA_INDEX}.")
+        raise RuntimeError(f"Could not open camera at index {index}.")
 
-    return camera
+    try:
+        yield camera
+    finally:
+        camera.release()
+        destroyAllWindows()
 
 
 def read_frame(camera: VideoCapture) -> tuple[bool, MatLike]:
@@ -27,11 +38,3 @@ def read_frame(camera: VideoCapture) -> tuple[bool, MatLike]:
     """
 
     return camera.read()
-
-
-def close_camera(camera: VideoCapture) -> None:
-    """Release the camera and close any OpenCV windows."""
-
-    camera.release()
-
-    destroyAllWindows()

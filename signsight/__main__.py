@@ -1,4 +1,4 @@
-"""Main CLI interface."""
+"""Main executable for the SignSight program."""
 
 import sys
 
@@ -18,14 +18,13 @@ from torchvision import datasets
 from signsight.const import DATASET_ROOT_PATH, DATASET_TRAIN_PATH
 from signsight.core import evaluate_model, train_model
 from signsight.inference import (
-    close_camera,
     create_hand_detector,
     detect_hand,
     draw_landmarks,
     draw_no_hand_message,
     draw_prediction,
     load_predictor,
-    open_camera,
+    open_camera_session,
     predict,
     read_frame,
 )
@@ -39,21 +38,17 @@ if not Path(DATASET_ROOT_PATH).exists():
     sys.exit(2)
 
 
-def _run_inference() -> None:
+def _run_inference_pipeline() -> None:
     """Run the live inference loop."""
 
     model, device = load_predictor()
-
-    # Load class names from dataset folder structure
     dataset = datasets.ImageFolder(DATASET_TRAIN_PATH)
     class_names = dataset.classes
-
-    camera = open_camera()
     detector = create_hand_detector()
 
     print("Running inference. Press 'q' to quit.")
 
-    try:
+    with open_camera_session() as camera:
         while True:
             success, frame = read_frame(camera)
 
@@ -76,8 +71,6 @@ def _run_inference() -> None:
 
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
-    finally:
-        close_camera(camera)
 
 
 def main() -> None:
@@ -98,7 +91,7 @@ def main() -> None:
         case "eval":
             evaluate_model()
         case "run":
-            _run_inference()
+            _run_inference_pipeline()
         case _:
             parser.print_help()
 
