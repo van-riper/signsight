@@ -6,12 +6,7 @@ import torch
 from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
 
-from ..const import (
-    BATCH_SIZE,
-    DATASET_TEST_PATH,
-    DATASET_TRAIN_PATH,
-    MODEL_PATH,
-)
+from ..const import DATASET_TEST_PATH, DATASET_TRAIN_PATH, MODEL_PATH
 from .utils import (
     build_model,
     get_device,
@@ -30,7 +25,7 @@ EPOCH_COUNT: int = 10
 LEARNING_RATE: float = 0.0001
 
 
-def train_model() -> None:
+def train_model(batch_size: int) -> None:
     """Run the full training loop and save weights to disk."""
 
     time_start_seconds = time()
@@ -49,8 +44,8 @@ def train_model() -> None:
 
     # Wraps data with proper batch size for training/validation
     # and randomize image order when grouping batches
-    dataloader_train = DataLoader(dataset_train, BATCH_SIZE, shuffle=True)
-    dataloader_val = DataLoader(dataset_val, BATCH_SIZE)
+    dataloader_train = DataLoader(dataset_train, batch_size, shuffle=True)
+    dataloader_val = DataLoader(dataset_val, batch_size)
 
     # NOTE: `_val` is an abbreviation of `_validation`
 

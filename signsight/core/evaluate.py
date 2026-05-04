@@ -10,7 +10,7 @@ from sklearn.metrics import confusion_matrix as sklearn_cm
 from torch.utils.data import DataLoader
 from torchvision import datasets
 
-from ..const import BATCH_SIZE, DATASET_RAW_PATH, FIGURE_PATH, MODEL_PATH
+from ..const import DATASET_RAW_PATH, FIGURE_PATH, MODEL_PATH
 from .utils import (
     get_device,
     get_transform,
@@ -20,7 +20,7 @@ from .utils import (
 )
 
 
-def evaluate_model() -> None:
+def evaluate_model(batch_size: int) -> None:
     """Load saved model and print accuracy and confusion matrix."""
 
     print("Evaluating trained model accuracy...")
@@ -36,7 +36,7 @@ def evaluate_model() -> None:
     )
 
     # Wrap data and set the size of each batch
-    dataloader_eval = DataLoader(dataset_full, batch_size=BATCH_SIZE)
+    dataloader_eval = DataLoader(dataset_full, batch_size)
 
     # Load trained weights from disk
     model_trained = load_model(MODEL_PATH, device)
