@@ -1,13 +1,37 @@
 """Live inference loop for the prediction interface."""
 
+from contextlib import contextmanager
+from typing import Generator
+
 import cv2
 from torchvision import datasets
 
 from ..const import DATASET_TRAIN_PATH, INFERENCE_INTERVAL
-from .capture import open_camera_session
 from .detect import create_hand_detector, detect_hand
 from .display import draw_landmarks, draw_prediction
 from .predict import load_predictor, predict
+
+type CameraSession = Generator[cv2.VideoCapture, None, None]
+
+
+# Camera index for the built-in webcam
+CAMERA_INDEX: int = 0
+
+
+@contextmanager
+def open_camera_session(index: int = CAMERA_INDEX) -> CameraSession:
+    """Open the camera and guarantee cleanup on exit."""
+
+    camera = cv2.VideoCapture(index)
+
+    if not camera.isOpened():
+        raise RuntimeError(f"error: camera at index {index} not found")
+
+    try:
+        yield camera
+    finally:
+        camera.release()
+        cv2.destroyAllWindows()
 
 
 def run_inference_loop() -> None:
