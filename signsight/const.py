@@ -33,5 +33,5 @@ IMAGE_SIZE: int = 128
 # Set prediction box padding
 BOX_PADDING: int = 20
 
-# Run model inference once every 10 frames
-INFERENCE_INTERVAL: int = 10
+# Run model inference once every N frames
+INFERENCE_INTERVAL: int = 5
