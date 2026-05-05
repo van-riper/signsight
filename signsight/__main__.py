@@ -2,6 +2,7 @@
 
 import sys
 
+# TODO: relocate version check
 # Must use Python 3.12
 if sys.version_info < (3, 12) or sys.version_info >= (3, 13):
     VERSION = f"{sys.version_info.major}.{sys.version_info.minor}"
@@ -35,6 +36,7 @@ def main() -> None:
 
     parser = ArgumentParser(prog="signsight")
 
+    # TODO: add more flags, e.g. epoch count, learning rate, model architecture
     parser.add_argument(
         "-b",
         "--batch-size",

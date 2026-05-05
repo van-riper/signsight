@@ -28,8 +28,6 @@ HAND_LANDMARKS = [
     [(5, 9), (9, 13), (13, 17)],  # palm
 ]
 
-# TODO: handle all frame draw functions in a single function here
-
 
 def draw_prediction(
     frame: MatLike,
