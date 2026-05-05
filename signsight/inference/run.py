@@ -4,7 +4,7 @@ import cv2
 from torchvision import datasets
 
 from ..const import DATASET_TRAIN_PATH, INFERENCE_INTERVAL
-from .capture import open_camera_session, read_frame
+from .capture import open_camera_session
 from .detect import create_hand_detector, detect_hand
 from .display import draw_landmarks, draw_prediction
 from .predict import load_predictor, predict
@@ -29,7 +29,7 @@ def run_inference_loop() -> None:
 
     with open_camera_session() as camera:
         while True:
-            success, frame = read_frame(camera)
+            success, frame = camera.read()
 
             if not success:
                 print("warning: could not read frame")

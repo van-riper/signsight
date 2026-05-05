@@ -4,7 +4,6 @@ from contextlib import contextmanager
 from typing import Generator
 
 from cv2 import VideoCapture, destroyAllWindows
-from cv2.typing import MatLike
 
 type CameraSession = Generator[VideoCapture, None, None]
 
@@ -27,14 +26,3 @@ def open_camera_session(index: int = CAMERA_INDEX) -> CameraSession:
     finally:
         camera.release()
         destroyAllWindows()
-
-
-def read_frame(camera: VideoCapture) -> tuple[bool, MatLike]:
-    """Read a single frame from the camera.
-
-    Returns:
-        A tuple of a success flag and the frame. If the flag is False,
-        the frame should be discarded.
-    """
-
-    return camera.read()
