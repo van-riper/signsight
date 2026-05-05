@@ -42,7 +42,7 @@ def predict(
     pil_image = Image.fromarray(rgb)
 
     # Preprocess and add batch dimension
-    tensor: torch.Tensor = transform(pil_image)  # type: ignore[assignment]
+    tensor: torch.Tensor = transform(pil_image)  # type: ignore
     tensor = tensor.clone().detach().unsqueeze(0).to(device)
 
     with torch.no_grad():

@@ -69,7 +69,7 @@ def run_inference_loop() -> None:
 
             if is_hand_detected and frame_count % INFERENCE_INTERVAL == 0:
                 predicted_class, confidence_score = predict(
-                    model, device, roi, class_names
+                    model, device, roi, class_names  # type: ignore
                 )
 
             frame = draw_prediction(
