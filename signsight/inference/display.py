@@ -9,7 +9,7 @@ from ..const import BOX_PADDING
 
 # Interface display options
 FONT = cv2.FONT_HERSHEY_SIMPLEX
-FONT_SCALE = 1.5
+FONT_SCALE = 1.25
 FONT_THICKNESS = 2
 TEXT_COLOR = (255, 255, 255)
 BACKGROUND_COLOR = (0, 0, 0)
