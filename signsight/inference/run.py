@@ -41,7 +41,7 @@ def run_inference_loop() -> None:
     print("Running inference. Press 'q' to quit.")
 
     predicted_class = ""
-    confidence = 0.0
+    confidence_score = 0.0
     frame_count = 0
 
     cv2.namedWindow("SignSight", cv2.WINDOW_GUI_NORMAL)
@@ -50,25 +50,31 @@ def run_inference_loop() -> None:
     with open_camera_session() as camera:
         while True:
             success, frame = camera.read()
+            is_hand_detected = True
+
+            if cv2.waitKey(1) & 0xFF == ord("q"):
+                break
 
             if not success:
-                print("warning: could not read frame")
+                print("warning: could not read frame", end="\r")
                 break
 
             roi, landmarks = detect_hand(detector, frame)
 
             if roi is None or landmarks is None:
-                frame = draw_prediction(frame, is_hand_detected=False)
-            else:
-                if frame_count % INFERENCE_INTERVAL == 0:
-                    predicted_class, confidence = predict(
-                        model, device, roi, class_names
-                    )
-                frame = draw_prediction(frame, predicted_class, confidence)
+                is_hand_detected = False
+
+            if is_hand_detected:
                 frame = draw_landmarks(frame, landmarks)
+
+            if is_hand_detected and frame_count % INFERENCE_INTERVAL == 0:
+                predicted_class, confidence_score = predict(
+                    model, device, roi, class_names
+                )
+
+            frame = draw_prediction(
+                frame, predicted_class, confidence_score, is_hand_detected
+            )
 
             frame_count += 1
             cv2.imshow("SignSight", frame)
-
-            if cv2.waitKey(1) & 0xFF == ord("q"):
-                break

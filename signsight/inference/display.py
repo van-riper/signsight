@@ -86,7 +86,11 @@ def draw_prediction(
     return frame
 
 
-def draw_landmarks(frame: MatLike, landmarks: Any) -> MatLike:
+def draw_landmarks(
+    frame: MatLike,
+    landmarks: Any,
+    is_hand_detected: bool = True,
+) -> MatLike:
     """Draw hand landmarks and connections onto the frame.
 
     Args:
@@ -97,13 +101,16 @@ def draw_landmarks(frame: MatLike, landmarks: Any) -> MatLike:
         Frame with landmarks and connections drawn on it.
     """
 
+    if not is_hand_detected:
+        return frame
+
     height, width = frame.shape[:2]
 
     # Convert normalized landmark coordinates to pixel coordinates
     points = [(int(lm.x * width), int(lm.y * height)) for lm in landmarks]
 
     # Draw connections between landmarks
-    for start, end in [point for finger in HAND_LANDMARKS for point in finger]:
+    for start, end in [point for region in HAND_LANDMARKS for point in region]:
         cv2.line(frame, points[start], points[end], CONNECTION_COLOR, 2)
 
     # Draw landmark points on top of connections
