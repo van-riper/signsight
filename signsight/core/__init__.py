@@ -2,4 +2,4 @@
 
 from .evaluate import evaluate_model
 from .train import train_model
-from .utils import build_model, get_device, get_transform, load_model
+from .utils import get_device, get_transform, load_model

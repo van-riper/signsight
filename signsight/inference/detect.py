@@ -9,7 +9,7 @@ from cv2.typing import MatLike
 from mediapipe.tasks import python as mp_python
 from mediapipe.tasks.python import vision as mp_vision
 
-from ..const import HAND_LANDMARKER_PATH, BOX_PADDING
+from ..const import BOX_PADDING, HAND_LANDMARKER_PATH
 
 type HandTuple = tuple[MatLike | None, Any]
 type CoordTuple = tuple[MatLike, tuple[int, int]]
