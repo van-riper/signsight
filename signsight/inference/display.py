@@ -5,7 +5,7 @@ from typing import Any
 import cv2
 from cv2.typing import MatLike
 
-from ..const import ROI_PADDING
+from ..const import BOX_PADDING
 
 # Interface display options
 FONT = cv2.FONT_HERSHEY_SIMPLEX
@@ -59,8 +59,8 @@ def draw_prediction(
         frame,
         (0, 0),
         (
-            text_width + ROI_PADDING * 2,
-            text_height + baseline + ROI_PADDING * 2,
+            text_width + BOX_PADDING * 2,
+            text_height + baseline + BOX_PADDING * 2,
         ),
         BACKGROUND_COLOR,
         thickness=cv2.FILLED,
@@ -70,7 +70,7 @@ def draw_prediction(
     cv2.putText(
         frame,
         label,
-        (ROI_PADDING, text_height + ROI_PADDING),
+        (BOX_PADDING, text_height + BOX_PADDING),
         FONT,
         FONT_SCALE,
         TEXT_COLOR,
