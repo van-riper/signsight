@@ -6,7 +6,7 @@ from torchvision import datasets
 from ..const import DATASET_TRAIN_PATH, INFERENCE_INTERVAL
 from .capture import open_camera_session, read_frame
 from .detect import create_hand_detector, detect_hand
-from .display import draw_landmarks, draw_prediction, draw_no_hand_message
+from .display import draw_landmarks, draw_prediction
 from .predict import load_predictor, predict
 
 
@@ -38,7 +38,7 @@ def run_inference_loop() -> None:
             roi, landmarks = detect_hand(detector, frame)
 
             if roi is None or landmarks is None:
-                frame = draw_no_hand_message(frame)
+                frame = draw_prediction(frame, is_hand_detected=False)
             else:
                 if frame_count % INFERENCE_INTERVAL == 0:
                     predicted_class, confidence = predict(

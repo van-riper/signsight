@@ -33,8 +33,9 @@ HAND_LANDMARKS = [
 
 def draw_prediction(
     frame: MatLike,
-    predicted_class: str,
-    confidence_score: float,
+    predicted_class: str = "",
+    confidence_score: float = 0.0,
+    is_hand_detected: bool = True,
 ) -> MatLike:
     """Draw the predicted letter and confidence score onto the frame.
 
@@ -42,12 +43,17 @@ def draw_prediction(
         frame: BGR frame from the webcam.
         predicted_class: Predicted ASL letter.
         confidence: Confidence score as a percentage.
+        is_hand_detected: Whether a hand is detected in the given frame or not.
 
     Returns:
         Frame with prediction overlay drawn on it.
     """
 
-    label = f"{predicted_class} ({confidence_score:.1f}%)"
+    # Show message when no hand is detected, otherwise show prediction
+    if not is_hand_detected:
+        label = "No hand detected"
+    else:
+        label = f"{predicted_class} ({confidence_score:.1f}%)"
 
     # Measure text size to draw a background rectangle behind it
     (text_width, text_height), baseline = cv2.getTextSize(
@@ -103,28 +109,5 @@ def draw_landmarks(frame: MatLike, landmarks: Any) -> MatLike:
     # Draw landmark points on top of connections
     for point in points:
         cv2.circle(frame, point, LANDMARK_RADIUS, LANDMARK_COLOR, cv2.FILLED)
-
-    return frame
-
-
-def draw_no_hand_message(frame: MatLike) -> MatLike:
-    """Draw a message on the frame when no hand is detected.
-
-    Args:
-        frame: BGR frame from the webcam.
-
-    Returns:
-        Frame with no hand message drawn on it.
-    """
-
-    cv2.putText(
-        frame,
-        "No hand detected",
-        (10, 40),
-        FONT,
-        1.0,
-        TEXT_COLOR,
-        FONT_THICKNESS,
-    )
 
     return frame
