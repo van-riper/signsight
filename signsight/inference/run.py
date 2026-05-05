@@ -14,18 +14,14 @@ from .predict import load_predictor, predict
 type CameraSession = Generator[cv2.VideoCapture, None, None]
 
 
-# Camera index for the built-in webcam
-CAMERA_INDEX: int = 0
-
-
 @contextmanager
-def open_camera_session(index: int = CAMERA_INDEX) -> CameraSession:
+def open_camera_session(camera_index: int = 0) -> CameraSession:
     """Open the camera and guarantee cleanup on exit."""
 
-    camera = cv2.VideoCapture(index)
+    camera = cv2.VideoCapture(camera_index)
 
     if not camera.isOpened():
-        raise RuntimeError(f"error: camera at index {index} not found")
+        raise RuntimeError(f"error: camera at index {camera_index} not found")
 
     try:
         yield camera
