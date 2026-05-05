@@ -45,6 +45,7 @@ def get_transform(training: bool) -> transforms.Compose:
     return transforms.Compose(base + augmentation + common)
 
 
+# TODO: support multiple model architectures: resnet, mobilenet, efficientnet
 def build_model(pretrained: bool) -> torch.nn.Module:
     """Build the model weights."""
 

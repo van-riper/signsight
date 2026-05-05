@@ -9,7 +9,7 @@ from cv2.typing import MatLike
 from mediapipe.tasks import python as mp_python
 from mediapipe.tasks.python import vision as mp_vision
 
-from ..const import HAND_LANDMARKER_PATH, ROI_PADDING
+from ..const import BOX_PADDING, HAND_LANDMARKER_PATH
 
 type HandTuple = tuple[MatLike | None, Any]
 type CoordTuple = tuple[MatLike, tuple[int, int]]
@@ -44,8 +44,9 @@ def detect_hand(detector: Any, frame: MatLike) -> HandTuple:
 
     height, width = frame.shape[:2]
 
-    # MediaPipe expects RGB, OpenCV provides BGR
-    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    # MediaPipe expects square RGB, OpenCV provides BGR
+    square_frame = _make_square(frame)
+    rgb_frame = cv2.cvtColor(square_frame, cv2.COLOR_BGR2RGB)
     mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb_frame)
 
     results = detector.detect(mp_image)
@@ -60,6 +61,18 @@ def detect_hand(detector: Any, frame: MatLike) -> HandTuple:
     masked_roi = _apply_hand_mask(roi, landmarks, (height, width), roi_origin)
 
     return masked_roi, landmarks
+
+
+def _make_square(frame: MatLike) -> MatLike:
+    """Pad frame to a square by adding black borders."""
+
+    height, width = frame.shape[:2]
+    size = max(height, width)
+    square = np.zeros((size, size, 3), dtype=np.uint8)
+    y_offset = (size - height) // 2
+    x_offset = (size - width) // 2
+    square[y_offset : y_offset + height, x_offset : x_offset + width] = frame
+    return square
 
 
 def _crop_roi(frame: MatLike, landmarks: Any) -> CoordTuple:
@@ -79,10 +92,10 @@ def _crop_roi(frame: MatLike, landmarks: Any) -> CoordTuple:
     y_coords = [lm.y * height for lm in landmarks]
 
     # Compute bounding box with padding, clamped to frame boundaries
-    x_min = max(0, int(min(x_coords)) - ROI_PADDING)
-    x_max = min(width, int(max(x_coords)) + ROI_PADDING)
-    y_min = max(0, int(min(y_coords)) - ROI_PADDING)
-    y_max = min(height, int(max(y_coords)) + ROI_PADDING)
+    x_min = max(0, int(min(x_coords)) - BOX_PADDING)
+    x_max = min(width, int(max(x_coords)) + BOX_PADDING)
+    y_min = max(0, int(min(y_coords)) - BOX_PADDING)
+    y_max = min(height, int(max(y_coords)) + BOX_PADDING)
 
     return frame[y_min:y_max, x_min:x_max], (x_min, y_min)
 
