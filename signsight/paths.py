@@ -26,7 +26,7 @@ def assert_paths() -> None:
         DATASET_ROOT_PATH,
         DATASET_RAW_PATH,
         DATASET_TRAIN_PATH,
-        DATASET_TRAIN_PATH,
+        DATASET_TEST_PATH,
         HAND_LANDMARKER_PATH,
     )
 
