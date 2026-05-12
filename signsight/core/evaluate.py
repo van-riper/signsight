@@ -8,12 +8,12 @@ from matplotlib import get_backend
 from sklearn.metrics import ConfusionMatrixDisplay
 from sklearn.metrics import confusion_matrix as sklearn_cm
 from torch.utils.data import DataLoader
-from torchvision import datasets
 
 from ..paths import DATASET_RAW_PATH, FIGURE_PATH, MODEL_PATH
 from .utils import (
     get_device,
     get_transform,
+    load_dataset,
     load_model,
     print_batch_progress,
     print_time_elapsed,
@@ -31,8 +31,8 @@ def evaluate_model(batch_size: int) -> None:
     device = get_device()
 
     # Load the entire dataset (unlike for training, this doesn't split it)
-    dataset_full = datasets.ImageFolder(
-        str(DATASET_RAW_PATH), transform=get_transform(training=False)
+    dataset_full = load_dataset(
+        DATASET_RAW_PATH, transform=get_transform(training=False)
     )
 
     # Wrap data and set the size of each batch
