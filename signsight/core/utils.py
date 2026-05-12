@@ -1,6 +1,7 @@
 """Functions for model building, image transforms, and batch progress."""
 
 from datetime import timedelta
+from pathlib import Path
 
 import torch
 from torchvision import models, transforms
@@ -59,7 +60,7 @@ def build_model(pretrained: bool) -> torch.nn.Module:
 
 
 # TODO: set path argument as a Path object
-def load_model(path: str, device: torch.device) -> torch.nn.Module:
+def load_model(path: Path, device: torch.device) -> torch.nn.Module:
     """Load saved model weights from disk."""
 
     model = build_model(pretrained=False)
