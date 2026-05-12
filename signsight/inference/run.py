@@ -51,6 +51,7 @@ def run_inference_loop() -> None:
     with open_camera_session() as camera:
         while True:
             success, frame = camera.read()
+            frame = cv2.flip(frame, 1)
             is_hand_detected = True
 
             if cv2.waitKey(1) & 0xFF == ord("q"):
