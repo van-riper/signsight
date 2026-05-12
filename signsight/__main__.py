@@ -1,13 +1,15 @@
 """Main executable for the SignSight program."""
 
 import sys
+from argparse import ArgumentParser
 
 # TODO: relocate version check
 # Must use Python 3.12
 if sys.version_info < (3, 12) or sys.version_info >= (3, 13):
-    VERSION = f"{sys.version_info.major}.{sys.version_info.minor}"
-    print(f"error: Python {VERSION} in use, SignSight requires Python 3.12")
-    sys.exit(1)
+    PYTHON_VERSION = f"{sys.version_info.major}.{sys.version_info.minor}"
+    raise SystemExit(
+        f"error: Python {PYTHON_VERSION} in use, SignSight requires Python 3.12"
+    )
 
 
 # pylint: disable=wrong-import-position
@@ -19,6 +21,7 @@ assert_paths()
 
 
 # TODO: apply Google-style formatting to all function docstrings
+# TODO: automatically download and extract missing models and datasets
 
 
 def main() -> None:
