@@ -6,7 +6,7 @@ import torch
 from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
 
-from ..const import DATASET_TEST_PATH, DATASET_TRAIN_PATH, MODEL_PATH
+from ..paths import DATASET_TEST_PATH, DATASET_TRAIN_PATH, MODEL_PATH
 from .utils import (
     build_model,
     get_device,
@@ -32,10 +32,10 @@ def train_model(batch_size: int) -> None:
     device = get_device()
 
     dataset_train = ImageFolder(
-        DATASET_TRAIN_PATH, transform=get_transform(training=True)
+        str(DATASET_TRAIN_PATH), transform=get_transform(training=True)
     )
     dataset_val = ImageFolder(
-        DATASET_TEST_PATH, transform=get_transform(training=False)
+        str(DATASET_TEST_PATH), transform=get_transform(training=False)
     )
 
     # Wraps data with proper batch size for training/validation
@@ -110,9 +110,9 @@ def train_model(batch_size: int) -> None:
     print("Training complete!")
 
     # Save weights to disk as a .pth file
-    torch.save(model.state_dict(), MODEL_PATH)
+    torch.save(model.state_dict(), str(MODEL_PATH))
 
-    print(f"Model saved to {MODEL_PATH}")
+    print(f"Model saved to {str(MODEL_PATH)}")
 
     time_stop_seconds = time()
 

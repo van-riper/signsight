@@ -10,7 +10,7 @@ from sklearn.metrics import confusion_matrix as sklearn_cm
 from torch.utils.data import DataLoader
 from torchvision import datasets
 
-from ..const import DATASET_RAW_PATH, FIGURE_PATH, MODEL_PATH
+from ..paths import DATASET_RAW_PATH, FIGURE_PATH, MODEL_PATH
 from .utils import (
     get_device,
     get_transform,
@@ -32,14 +32,14 @@ def evaluate_model(batch_size: int) -> None:
 
     # Load the entire dataset (unlike for training, this doesn't split it)
     dataset_full = datasets.ImageFolder(
-        DATASET_RAW_PATH, transform=get_transform(training=False)
+        str(DATASET_RAW_PATH), transform=get_transform(training=False)
     )
 
     # Wrap data and set the size of each batch
     dataloader_eval = DataLoader(dataset_full, batch_size)
 
     # Load trained weights from disk
-    model_trained = load_model(MODEL_PATH, device)
+    model_trained = load_model(str(MODEL_PATH), device)
 
     # Get the predictions
     predictions, labels = _collect_predictions(
@@ -133,8 +133,8 @@ def _plot_confusion_matrix(
     plt.tight_layout()
 
     # Save the confusion matrix to disk
-    plt.savefig(FIGURE_PATH, dpi=150, bbox_inches="tight")
-    print(f"Confusion matrix figure saved to: {FIGURE_PATH}")
+    plt.savefig(str(FIGURE_PATH), dpi=150, bbox_inches="tight")
+    print(f"Confusion matrix figure saved to: {str(FIGURE_PATH)}")
 
     # Display the plot if the backend allows it
     if get_backend().lower() not in ("agg", "pdf", "svg", "ps"):

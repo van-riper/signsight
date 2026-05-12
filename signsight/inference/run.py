@@ -6,7 +6,8 @@ from typing import Generator
 import cv2
 from torchvision import datasets
 
-from ..const import DATASET_TRAIN_PATH, INFERENCE_INTERVAL
+from ..const import INFERENCE_INTERVAL
+from ..paths import DATASET_TRAIN_PATH
 from .detect import create_hand_detector, detect_hand
 from .display import draw_landmarks, draw_prediction
 from .predict import load_predictor, predict
@@ -34,7 +35,7 @@ def run_inference_loop() -> None:
     """Run the live inference loop."""
 
     model, device = load_predictor()
-    dataset = datasets.ImageFolder(DATASET_TRAIN_PATH)
+    dataset = datasets.ImageFolder(str(DATASET_TRAIN_PATH))
     class_names = dataset.classes
     detector = create_hand_detector()
 
@@ -50,6 +51,7 @@ def run_inference_loop() -> None:
     with open_camera_session() as camera:
         while True:
             success, frame = camera.read()
+            frame = cv2.flip(frame, 1)
             is_hand_detected = True
 
             if cv2.waitKey(1) & 0xFF == ord("q"):
