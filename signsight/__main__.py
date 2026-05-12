@@ -15,10 +15,9 @@ if sys.version_info < (3, 12) or sys.version_info >= (3, 13):
 # pylint: disable=wrong-import-position
 from signsight.core import evaluate_model, get_device, train_model
 from signsight.inference import run_inference_loop
+from signsight.paths import assert_paths
 
-# NOTE: temporarily skip path assertions for colab runtime
-# from signsight.paths import assert_paths
-# assert_paths()
+assert_paths()
 
 
 # TODO: apply Google-style formatting to all function docstrings

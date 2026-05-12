@@ -71,17 +71,21 @@ def load_dataset(path: Path, transform: transforms.Compose) -> ImageFolder:
         cls for cls in dataset.classes if cls not in EXCLUDED_CLASSES
     ]
 
-    # Remap class indices
-    dataset.classes = filtered_classes
-    dataset.class_to_idx = {
-        cls: idx for idx, cls in enumerate(filtered_classes)
-    }
-    dataset.samples = [
-        (path, dataset.class_to_idx[dataset.classes[label]])
-        for path, label in dataset.samples
-        if dataset.classes[label] not in EXCLUDED_CLASSES
+    # Build new class to index mapping
+    new_class_to_idx = {cls: idx for idx, cls in enumerate(filtered_classes)}
+
+    # Filter samples using original class list to look up class name by index
+    original_classes = dataset.classes
+    filtered_samples = [
+        (sample_path, new_class_to_idx[original_classes[label]])
+        for sample_path, label in dataset.samples
+        if original_classes[label] not in EXCLUDED_CLASSES
     ]
-    dataset.targets = [label for _, label in dataset.samples]
+
+    dataset.classes = filtered_classes
+    dataset.class_to_idx = new_class_to_idx
+    dataset.samples = filtered_samples
+    dataset.targets = [label for _, label in filtered_samples]
 
     return dataset
 
