@@ -103,7 +103,7 @@ Your `data/` folder should look like this:
 
 ```text
 data/
-├── ASL_HG_3600/
+├── ASL_HG_36000/
 │   ├── asl_dataset/
 │   │   └── ...
 │   ├── asl_processed/
@@ -144,8 +144,8 @@ The progress of the current epoch's batch cycling is displayed in real-time so
 you can monitor how fast the model takes to train.
 
 The training and evaluation batch size is preset to either **32** or **64**. If
-SignSight detects a CUDA device on your machine, the batch size is set to 64.
-If not, it defaults to 32.
+SignSight detects a CUDA device on your machine, the batch size is set to 64. If
+not, it defaults to 32.
 
 If you want to specify the batch size, pass the `--batch-size` flag to override
 the preset defaults.
