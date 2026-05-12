@@ -4,13 +4,13 @@ from time import time
 
 import torch
 from torch.utils.data import DataLoader
-from torchvision.datasets import ImageFolder
 
 from ..paths import DATASET_TEST_PATH, DATASET_TRAIN_PATH, MODEL_PATH
 from .utils import (
     build_model,
     get_device,
     get_transform,
+    load_dataset,
     print_batch_progress,
     print_time_elapsed,
 )
@@ -31,11 +31,11 @@ def train_model(batch_size: int) -> None:
     # Accomodate CUDA devices
     device = get_device()
 
-    dataset_train = ImageFolder(
-        str(DATASET_TRAIN_PATH), transform=get_transform(training=True)
+    dataset_train = load_dataset(
+        DATASET_TRAIN_PATH, transform=get_transform(training=True)
     )
-    dataset_val = ImageFolder(
-        str(DATASET_TEST_PATH), transform=get_transform(training=False)
+    dataset_val = load_dataset(
+        DATASET_TEST_PATH, transform=get_transform(training=False)
     )
 
     # Wraps data with proper batch size for training/validation

@@ -1,12 +1,14 @@
 """Functions for model building, image transforms, and batch progress."""
 
 from datetime import timedelta
+from os import listdir
 from pathlib import Path
 
 import torch
 from torchvision import models, transforms
+from torchvision.datasets import ImageFolder
 
-from ..const import CLASS_COUNT, IMAGE_SIZE
+from ..const import CLASS_COUNT, EXCLUDED_CLASSES, IMAGE_SIZE
 
 
 def get_device() -> torch.device:
@@ -44,6 +46,44 @@ def get_transform(training: bool) -> transforms.Compose:
     ]
 
     return transforms.Compose(base + augmentation + common)
+
+
+# TODO: restore split_dataset for the raw dataset pending model performance
+
+
+def get_class_names(dataset_path: Path) -> list[str]:
+    """Return sorted class names excluding digit classes."""
+
+    return [
+        cls
+        for cls in sorted(listdir(dataset_path))
+        if cls not in EXCLUDED_CLASSES and (dataset_path / cls).is_dir()
+    ]
+
+
+def load_dataset(path: Path, transform: transforms.Compose) -> ImageFolder:
+    """Load dataset excluding digit classes."""
+
+    dataset = ImageFolder(str(path), transform=transform)
+
+    # Filter out digit classes
+    filtered_classes = [
+        cls for cls in dataset.classes if cls not in EXCLUDED_CLASSES
+    ]
+
+    # Remap class indices
+    dataset.classes = filtered_classes
+    dataset.class_to_idx = {
+        cls: idx for idx, cls in enumerate(filtered_classes)
+    }
+    dataset.samples = [
+        (path, dataset.class_to_idx[dataset.classes[label]])
+        for path, label in dataset.samples
+        if dataset.classes[label] not in EXCLUDED_CLASSES
+    ]
+    dataset.targets = [label for _, label in dataset.samples]
+
+    return dataset
 
 
 # TODO: support multiple model architectures: resnet, mobilenet, efficientnet
