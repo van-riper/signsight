@@ -39,7 +39,7 @@ def evaluate_model(batch_size: int) -> None:
     dataloader_eval = DataLoader(dataset_full, batch_size)
 
     # Load trained weights from disk
-    model_trained = load_model(str(MODEL_PATH), device)
+    model_trained = load_model(MODEL_PATH, device)
 
     # Get the predictions
     predictions, labels = _collect_predictions(
