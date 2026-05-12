@@ -10,22 +10,12 @@ if sys.version_info < (3, 12) or sys.version_info >= (3, 13):
     sys.exit(1)
 
 
-from argparse import ArgumentParser
-from pathlib import Path
-
-from signsight.const import DATASET_ROOT_PATH
+# pylint: disable=wrong-import-position
 from signsight.core import evaluate_model, get_device, train_model
 from signsight.inference import run_inference_loop
+from signsight.paths import assert_paths
 
-# TODO: relocate path assertion logic to another helper module
-# TODO: make more assertions for all the necessary paths
-# Must be able to detect the dataset
-if not Path(DATASET_ROOT_PATH).exists():
-    print("error: extracted database not found:")
-    print("\tThe ASL-HG database must be downloaded and")
-    print("\textracted into the `data/` folder in this repo.")
-    print("\tPlease consult the README for more information.")
-    sys.exit(2)
+assert_paths()
 
 
 # TODO: apply Google-style formatting to all function docstrings

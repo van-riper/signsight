@@ -4,8 +4,8 @@ import cv2
 import torch
 from PIL import Image
 
-from ..const import MODEL_PATH
 from ..core import get_device, get_transform, load_model
+from ..paths import MODEL_PATH
 
 
 def load_predictor() -> tuple[torch.nn.Module, torch.device]:

@@ -9,7 +9,8 @@ from cv2.typing import MatLike
 from mediapipe.tasks import python as mp_python
 from mediapipe.tasks.python import vision as mp_vision
 
-from ..const import BOX_PADDING, HAND_LANDMARKER_PATH
+from ..const import BOX_PADDING
+from ..paths import HAND_LANDMARKER_PATH
 
 type HandTuple = tuple[MatLike | None, Any]
 type CoordTuple = tuple[MatLike, tuple[int, int]]
@@ -18,7 +19,9 @@ type CoordTuple = tuple[MatLike, tuple[int, int]]
 def create_hand_detector() -> Any:
     """Create and return a MediaPipe hand landmarker detector."""
 
-    base_options = mp_python.BaseOptions(model_asset_path=HAND_LANDMARKER_PATH)
+    base_options = mp_python.BaseOptions(
+        model_asset_path=str(HAND_LANDMARKER_PATH)
+    )
 
     options = mp_vision.HandLandmarkerOptions(
         base_options=base_options,
